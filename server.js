@@ -1,4 +1,96 @@
-// server.js - Сервер с Supabase для постоянного хранения
+// API для обновления данных
+app.post('/api/menu', async (req, res) => {
+    try {
+        const newData = req.body;
+        
+        // Сохраняем кошелек отдельно если есть изменения
+        if (newData.wallet) {
+            try {
+                // Пробуем обновить существующий кошелек
+                const { error: updateError } = await supabase
+                    .from('wallet')
+                    .update(newData.wallet)
+                    .eq('id', 1);
+                
+                if (updateError) {
+                    // Если не удалось обновить, создаем новый
+                    const { error: insertError } = await supabase
+                        .from('wallet')
+                        .insert([{ id: 1, ...newData.wallet }]);
+                    
+                    if (insertError && insertError.code !== '23505') {
+                        console.log('Таблица wallet не настроена:', insertError);
+                    }
+                }
+            } catch (e) {
+                console.log('Пропускаем сохранение кошелька');
+            }
+        }
+        
+        // Определяем какие элементы добавить, обновить или удалить
+        const currentIds = menuCache.menu.map(item => item.id);
+        const newIds = newData.menu.map(item => item.id);
+        
+        // Удаляем отсутствующие
+        const toDelete = currentIds.filter(id => !newIds.includes(id));
+        if (toDelete.length > 0) {
+            const { error } = await supabase
+                .from('menu_items')
+                .delete()
+                .in('id', toDelete);
+            
+            if (error) throw error;
+        }
+        
+        // Добавляем или обновляем элементы
+        for (const item of newData.menu) {
+            const { id, ...itemData } = item;
+            
+            // Преобразуем старый формат в новый
+            if (itemData.kissPrice && !itemData.prices) {
+                itemData.prices = {
+                    kisses: itemData.kissPrice,
+                    scratches: 0,
+                    massage: 0,
+                    licks: 0
+                };
+                delete itemData.kissPrice;
+            }
+            
+            if (currentIds.includes(id)) {
+                // Обновляем существующий
+                const { error } = await supabase
+                    .from('menu_items')
+                    .update(itemData)
+                    .eq('id', id);
+                
+                if (error) throw error;
+            } else {
+                // Добавляем новый
+                const { error } = await supabase
+                    .from('menu_items')
+                    .insert([{ id, ...itemData }]);
+                
+                if (error) throw error;
+            }
+        }
+        
+        // Обновляем кэш
+        menuCache = {
+            menu: newData.menu,
+            wallet: newData.wallet || menuCache.wallet,
+            lastUpdated: new Date().toISOString()
+        };
+        
+        // Уведомляем всех клиентов
+        broadcast({
+            type: 'update',
+            data: menuCache
+        });
+        
+        res.json({ success: true });
+    } catch (error) {
+        console.error('❌ Ошибка сох// server.js - Сервер с Supabase для постоянного хранения
 const express = require('express');
 const WebSocket = require('ws');
 const path = require('path');
@@ -22,19 +114,38 @@ app.use(express.json({ limit: '10mb' })); // Увеличиваем лимит �
 // Загрузка данных из Supabase при старте
 async function loadFromDatabase() {
     try {
-        const { data, error } = await supabase
+        // Загружаем блюда
+        const { data: menuData, error: menuError } = await supabase
             .from('menu_items')
             .select('*')
             .order('created_at', { ascending: false });
         
-        if (error) throw error;
+        if (menuError) throw menuError;
+        
+        // Загружаем кошелек (если есть таблица wallet)
+        let walletData = { kisses: 10, scratches: 5, massage: 2, licks: 1 };
+        
+        try {
+            const { data: wallet, error: walletError } = await supabase
+                .from('wallet')
+                .select('*')
+                .single();
+            
+            if (wallet && !walletError) {
+                walletData = wallet;
+            }
+        } catch (e) {
+            // Если таблицы нет, используем значения по умолчанию
+            console.log('Таблица wallet не найдена, используем значения по умолчанию');
+        }
         
         menuCache = {
-            menu: data || [],
+            menu: menuData || [],
+            wallet: walletData,
             lastUpdated: new Date().toISOString()
         };
         
-        console.log(`✅ Загружено ${data.length} блюд из базы данных`);
+        console.log(`✅ Загружено ${menuData.length} блюд из базы данных`);
     } catch (error) {
         console.error('❌ Ошибка загрузки из БД:', error);
     }

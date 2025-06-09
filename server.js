@@ -126,7 +126,7 @@ async function loadFromDatabase() {
         if (menuError) throw menuError;
         
         // Загружаем кошелек (если есть таблица wallet)
-        let walletData = { kisses: 10, scratches: 5, massage: 2, licks: 1 };
+        let walletData = { kisses: 0, scratches: 0, massage: 0, licks: 0 };
         
         try {
             const { data: wallet, error: walletError } = await supabase

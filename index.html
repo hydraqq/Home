@@ -407,6 +407,12 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+            background: #ccc !important;
+        }
+
+        button:disabled:hover {
+            transform: none;
+            box-shadow: none;
         }
 
         .menu-list {
@@ -1054,6 +1060,7 @@
             }
 
             async save() {
+                // Сохраняем локально для быстрого доступа
                 localStorage.setItem('menuDataBackup', JSON.stringify(this.data));
                 
                 try {
@@ -1063,27 +1070,56 @@
                         body: JSON.stringify(this.data)
                     });
                     
-                    if (!response.ok) throw new Error('Ошибка сохранения');
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Ошибка сервера: ${response.status} - ${errorText}`);
+                    }
+                    
+                    const result = await response.json();
+                    console.log('Данные успешно сохранены на сервере');
+                    return result;
+                    
                 } catch (error) {
-                    console.error('Ошибка синхронизации:', error);
+                    console.error('Ошибка синхронизации с сервером:', error);
                     this.showNotification('Ошибка сохранения. Данные сохранены локально.', 'error');
+                    throw error;
                 }
             }
 
             // Управление блюдами
             add(item) {
-                this.data.menu.push({
-                    ...item,
-                    id: Date.now().toString()
-                });
-                this.save();
+                try {
+                    const newItem = {
+                        ...item,
+                        id: Date.now().toString(),
+                        created_at: new Date().toISOString()
+                    };
+                    this.data.menu.push(newItem);
+                    this.save();
+                    console.log('Блюдо добавлено:', newItem.name);
+                } catch (error) {
+                    console.error('Ошибка добавления блюда:', error);
+                    throw error;
+                }
             }
 
             update(id, item) {
-                const index = this.data.menu.findIndex(i => i.id === id);
-                if (index !== -1) {
-                    this.data.menu[index] = { ...item, id };
-                    this.save();
+                try {
+                    const index = this.data.menu.findIndex(i => i.id === id);
+                    if (index !== -1) {
+                        this.data.menu[index] = { 
+                            ...item, 
+                            id,
+                            updated_at: new Date().toISOString()
+                        };
+                        this.save();
+                        console.log('Блюдо обновлено:', item.name);
+                    } else {
+                        throw new Error('Блюдо не найдено');
+                    }
+                } catch (error) {
+                    console.error('Ошибка обновления блюда:', error);
+                    throw error;
                 }
             }
 
@@ -1246,9 +1282,17 @@
             }
 
             showNotification(text, type = 'success') {
+                console.log('Показываем уведомление:', text, type);
                 const notification = document.getElementById('notification');
                 notification.textContent = text;
                 notification.classList.add('show');
+                
+                // Добавляем класс для типа уведомления
+                if (type === 'error') {
+                    notification.style.background = 'rgba(255, 71, 87, 0.9)';
+                } else {
+                    notification.style.background = 'rgba(0, 0, 0, 0.8)';
+                }
                 
                 setTimeout(() => {
                     notification.classList.remove('show');

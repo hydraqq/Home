@@ -2,28 +2,9 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мое Меню</title>
     <style>
-        /* Общие стили для touch-устройств */
-        * {
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-            -webkit-touch-callout: none;
-        }
-        
-        input, textarea, button, select {
-            -webkit-appearance: none;
-            border-radius: 8px;
-        }
-        
-        /* Предотвращаем зум при фокусе на input */
-        input[type="text"], input[type="number"], textarea {
-            font-size: 16px !important;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -82,7 +63,6 @@
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            position: relative;
         }
 
         h1 {
@@ -95,43 +75,34 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Компактный кошелек сбоку */
+        /* Кошелек */
         .wallet {
-            position: fixed;
-            top: 80px;
-            right: 20px;
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
-            padding: 15px;
+            padding: 20px;
             border-radius: 15px;
+            margin-bottom: 20px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            z-index: 999;
-            min-width: 120px;
         }
 
         .wallet h3 {
-            margin-bottom: 10px;
-            font-size: 1em;
-            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.3em;
         }
 
         .wallet-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
         }
 
         .currency-item {
             background: rgba(255, 255, 255, 0.2);
-            padding: 8px;
-            border-radius: 8px;
+            padding: 10px;
+            border-radius: 10px;
             text-align: center;
             backdrop-filter: blur(10px);
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
         }
 
         .currency-item:hover {
@@ -140,12 +111,18 @@
         }
 
         .currency-icon {
-            font-size: 1.2em;
+            font-size: 2em;
+            margin-bottom: 5px;
         }
 
         .currency-amount {
-            font-size: 1em;
+            font-size: 1.2em;
             font-weight: bold;
+        }
+
+        .currency-name {
+            font-size: 0.9em;
+            opacity: 0.9;
         }
 
         /* Корзина */
@@ -285,39 +262,32 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
+            background: #f0f0f0;
+            padding: 5px;
+            border-radius: 10px;
         }
 
         .mode-tab {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             background: transparent;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 500;
-            color: #667eea;
         }
 
         .mode-tab.active {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .add-section {
-            background: rgba(255, 255, 255, 0.9);
+            background: #f8f9fa;
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .form-group {
@@ -426,12 +396,6 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
-            background: #ccc !important;
-        }
-
-        button:disabled:hover {
-            transform: none;
-            box-shadow: none;
         }
 
         .menu-list {
@@ -524,17 +488,17 @@
             color: white;
         }
 
-        .price-tag.massage {
+        .price-tag.scratches {
             background: linear-gradient(45deg, #4ecdc4, #44a3aa);
             color: white;
         }
 
-        .price-tag.scratches {
+        .price-tag.massage {
             background: linear-gradient(45deg, #a8e063, #56ab2f);
             color: white;
         }
 
-        .price-tag.dishes {
+        .price-tag.licks {
             background: linear-gradient(45deg, #f093fb, #f5576c);
             color: white;
         }
@@ -590,11 +554,6 @@
 
         .add-to-cart-btn:hover {
             box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-        }
-
-        .add-to-cart-btn:disabled {
-            background: #ccc;
-            color: #666;
         }
 
         .search-box {
@@ -724,97 +683,9 @@
             display: block;
         }
 
-        /* Отображение кошелька в отдельной вкладке */
-        .wallet-display {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .wallet-display .wallet-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .wallet-display .currency-item {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .wallet-display .currency-item:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px);
-        }
-
-        .wallet-display .currency-icon {
-            font-size: 2.5em;
-        }
-
-        .wallet-display .currency-info {
-            flex: 1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .wallet-display .currency-amount {
-            font-size: 1.8em;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .wallet-display .currency-name {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-
-        .wallet-display .currency-controls {
-            display: flex;
-            gap: 8px;
-        }
-
-        .wallet-display .currency-btn {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            border: none;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .wallet-display .currency-btn.minus {
-            background: rgba(255, 71, 87, 0.8);
-        }
-
-        .wallet-display .currency-btn.plus {
-            background: rgba(46, 213, 115, 0.8);
-        }
-
-        .wallet-display .currency-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-        }
-
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
-                margin-right: 140px;
             }
             
             h1 {
@@ -830,20 +701,12 @@
                 height: 200px;
             }
 
+            .wallet-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
             .price-inputs {
                 grid-template-columns: 1fr;
-            }
-
-            .wallet {
-                position: static;
-                margin-bottom: 20px;
-                width: 100%;
-            }
-
-            .wallet-grid {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
             }
         }
     </style>
@@ -865,45 +728,6 @@
     <div class="cart-button" onclick="openCart()">
         🛒
         <span class="cart-count" id="cartCount" style="display: none;">0</span>
-    </div>
-
-    <!-- Компактный кошелек -->
-    <div class="wallet">
-        <h3>💰 Кошелек</h3>
-        <div class="wallet-grid">
-            <div class="currency-item">
-                <div class="currency-icon">💋</div>
-                <div class="currency-controls">
-                    <button class="currency-btn minus" onclick="adjustCurrency('kisses', -1)">-</button>
-                    <div class="currency-amount" id="kissesBalance">0</div>
-                    <button class="currency-btn plus" onclick="adjustCurrency('kisses', 1)">+</button>
-                </div>
-            </div>
-            <div class="currency-item">
-                <div class="currency-icon">💆</div>
-                <div class="currency-controls">
-                    <button class="currency-btn minus" onclick="adjustCurrency('massage', -1)">-</button>
-                    <div class="currency-amount" id="massageBalance">0</div>
-                    <button class="currency-btn plus" onclick="adjustCurrency('massage', 1)">+</button>
-                </div>
-            </div>
-            <div class="currency-item">
-                <div class="currency-icon">🤗</div>
-                <div class="currency-controls">
-                    <button class="currency-btn minus" onclick="adjustCurrency('scratches', -1)">-</button>
-                    <div class="currency-amount" id="scratchesBalance">0</div>
-                    <button class="currency-btn plus" onclick="adjustCurrency('scratches', 1)">+</button>
-                </div>
-            </div>
-            <div class="currency-item">
-                <div class="currency-icon">🧽</div>
-                <div class="currency-controls">
-                    <button class="currency-btn minus" onclick="adjustCurrency('licks', -1)">-</button>
-                    <div class="currency-amount" id="licksBalance">0</div>
-                    <button class="currency-btn plus" onclick="adjustCurrency('licks', 1)">+</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Модальное окно корзины -->
@@ -931,13 +755,39 @@
 
     <div class="container">
         <h1>🍳 Мое Меню</h1>
+        
+        <!-- Кошелек -->
+        <div class="wallet">
+            <h3>💰 Мой кошелек</h3>
+            <div class="wallet-grid">
+                <div class="currency-item">
+                    <div class="currency-icon">💋</div>
+                    <div class="currency-amount" id="kissesBalance">0</div>
+                    <div class="currency-name">Поцелуи</div>
+                </div>
+                <div class="currency-item">
+                    <div class="currency-icon">🤗</div>
+                    <div class="currency-amount" id="scratchesBalance">0</div>
+                    <div class="currency-name">Почухать</div>
+                </div>
+                <div class="currency-item">
+                    <div class="currency-icon">💆</div>
+                    <div class="currency-amount" id="massageBalance">0</div>
+                    <div class="currency-name">Массаж</div>
+                </div>
+                <div class="currency-item">
+                    <div class="currency-icon">🧽</div>
+                    <div class="currency-amount" id="licksBalance">0</div>
+                    <div class="currency-name">Мытьё посуды</div>
+                </div>
+            </div>
+        </div>
 
         <!-- Табы для переключения режимов -->
         <div class="mode-tabs">
             <button class="mode-tab active" onclick="switchMode('view')">📖 Просмотр</button>
             <button class="mode-tab" onclick="switchMode('add')">➕ Добавить</button>
-            <button class="mode-tab" onclick="switchMode('wallet')">💰 Кошелек</button>
-            <button class="mode-tab" onclick="switchMode('earn')">🎁 Заработать</button>
+            <button class="mode-tab" onclick="switchMode('earn')">💰 Заработать</button>
         </div>
         
         <!-- Режим добавления -->
@@ -947,7 +797,7 @@
                 <input type="hidden" id="editId" value="">
                 
                 <div class="form-group">
-                    <label for="dishImage">Фото блюда (необязательно)</label>
+                    <label for="dishImage">Фото блюда</label>
                     <div class="image-upload" id="imageUploadArea">
                         <input type="file" id="dishImage" accept="image/*">
                         <div id="uploadText">
@@ -960,38 +810,38 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="dishName">Название блюда *</label>
+                    <label for="dishName">Название блюда</label>
                     <input type="text" id="dishName" required placeholder="Например: Борщ">
                 </div>
                 
                 <div class="form-group">
-                    <label for="ingredients">Ингредиенты (необязательно)</label>
-                    <input type="text" id="ingredients" placeholder="Свекла, капуста, морковь...">
+                    <label for="ingredients">Ингредиенты</label>
+                    <input type="text" id="ingredients" required placeholder="Свекла, капуста, морковь...">
                 </div>
                 
                 <div class="form-group">
-                    <label for="recipe">Рецепт (необязательно)</label>
-                    <textarea id="recipe" placeholder="Описание приготовления..."></textarea>
+                    <label for="recipe">Рецепт</label>
+                    <textarea id="recipe" required placeholder="Описание приготовления..."></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label>Цена в разных валютах (необязательно):</label>
+                    <label>Цена в разных валютах:</label>
                     <div class="price-inputs">
                         <div class="price-input-group">
                             <span class="currency-label">💋</span>
-                            <input type="number" id="kissPrice" min="0" value="0" placeholder="Поцелуи">
-                        </div>
-                        <div class="price-input-group">
-                            <span class="currency-label">💆</span>
-                            <input type="number" id="massagePrice" min="0" value="0" placeholder="Массаж">
+                            <input type="number" id="kissPrice" min="0" value="3" placeholder="Поцелуи">
                         </div>
                         <div class="price-input-group">
                             <span class="currency-label">🤗</span>
                             <input type="number" id="scratchPrice" min="0" value="0" placeholder="Почухать">
                         </div>
                         <div class="price-input-group">
+                            <span class="currency-label">💆</span>
+                            <input type="number" id="massagePrice" min="0" value="0" placeholder="Массаж">
+                        </div>
+                        <div class="price-input-group">
                             <span class="currency-label">🧽</span>
-                            <input type="number" id="dishesPrice" min="0" value="0" placeholder="Мытьё посуды">
+                            <input type="number" id="lickPrice" min="0" value="0" placeholder="Мытьё посуды">
                         </div>
                     </div>
                 </div>
@@ -1009,14 +859,22 @@
                 <button onclick="earnCurrency('kisses', 1)" style="background: linear-gradient(45deg, #ff6b6b, #ff8787);">
                     💋 Получить поцелуй
                 </button>
-                <button onclick="earnCurrency('massage', 1)" style="background: linear-gradient(45deg, #4ecdc4, #44a3aa);">
-                    💆 Получить массаж
-                </button>
-                <button onclick="earnCurrency('scratches', 1)" style="background: linear-gradient(45deg, #a8e063, #56ab2f);">
+                <button onclick="earnCurrency('scratches', 1)" style="background: linear-gradient(45deg, #4ecdc4, #44a3aa);">
                     🤗 Получить почухать
+                </button>
+                <button onclick="earnCurrency('massage', 1)" style="background: linear-gradient(45deg, #a8e063, #56ab2f);">
+                    💆 Получить массаж
                 </button>
                 <button onclick="earnCurrency('licks', 1)" style="background: linear-gradient(45deg, #f093fb, #f5576c);">
                     🧽 Помыть посуду
+                </button>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 10px;">
+                <h3 style="margin-bottom: 10px;">🎁 Ежедневный бонус</h3>
+                <p style="color: #666; margin-bottom: 15px;">Получайте бонусы каждый день!</p>
+                <button onclick="claimDailyBonus()" id="dailyBonusBtn">
+                    Получить ежедневный бонус
                 </button>
             </div>
         </div>
@@ -1040,7 +898,7 @@
         // Класс для управления приложением
         class MenuApp {
             constructor() {
-                this.data = { menu: [], wallet: { kisses: 10, massage: 5, scratches: 2, licks: 1 } };
+                this.data = { menu: [], wallet: { kisses: 10, scratches: 5, massage: 2, licks: 1 } };
                 this.cart = [];
                 this.ws = null;
                 this.serverUrl = window.location.origin;
@@ -1057,6 +915,7 @@
                 this.connectWebSocket();
                 this.loadCart();
                 this.updateWalletDisplay();
+                this.checkDailyBonus();
                 setTimeout(() => this.showLoading(false), 500);
             }
 
@@ -1121,7 +980,7 @@
                         this.data = await response.json();
                         // Инициализируем кошелек если его нет
                         if (!this.data.wallet) {
-                            this.data.wallet = { kisses: 10, massage: 5, scratches: 2, licks: 1 };
+                            this.data.wallet = { kisses: 10, scratches: 5, massage: 2, licks: 1 };
                         }
                         renderMenu();
                     }
@@ -1132,7 +991,6 @@
             }
 
             async save() {
-                // Сохраняем локально для быстрого доступа
                 localStorage.setItem('menuDataBackup', JSON.stringify(this.data));
                 
                 try {
@@ -1142,56 +1000,27 @@
                         body: JSON.stringify(this.data)
                     });
                     
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`Ошибка сервера: ${response.status} - ${errorText}`);
-                    }
-                    
-                    const result = await response.json();
-                    console.log('Данные успешно сохранены на сервере');
-                    return result;
-                    
+                    if (!response.ok) throw new Error('Ошибка сохранения');
                 } catch (error) {
-                    console.error('Ошибка синхронизации с сервером:', error);
+                    console.error('Ошибка синхронизации:', error);
                     this.showNotification('Ошибка сохранения. Данные сохранены локально.', 'error');
-                    throw error;
                 }
             }
 
             // Управление блюдами
             add(item) {
-                try {
-                    const newItem = {
-                        ...item,
-                        id: Date.now().toString(),
-                        created_at: new Date().toISOString()
-                    };
-                    this.data.menu.push(newItem);
-                    this.save();
-                    console.log('Блюдо добавлено:', newItem.name);
-                } catch (error) {
-                    console.error('Ошибка добавления блюда:', error);
-                    throw error;
-                }
+                this.data.menu.push({
+                    ...item,
+                    id: Date.now().toString()
+                });
+                this.save();
             }
 
             update(id, item) {
-                try {
-                    const index = this.data.menu.findIndex(i => i.id === id);
-                    if (index !== -1) {
-                        this.data.menu[index] = { 
-                            ...item, 
-                            id,
-                            updated_at: new Date().toISOString()
-                        };
-                        this.save();
-                        console.log('Блюдо обновлено:', item.name);
-                    } else {
-                        throw new Error('Блюдо не найдено');
-                    }
-                } catch (error) {
-                    console.error('Ошибка обновления блюда:', error);
-                    throw error;
+                const index = this.data.menu.findIndex(i => i.id === id);
+                if (index !== -1) {
+                    this.data.menu[index] = { ...item, id };
+                    this.save();
                 }
             }
 
@@ -1207,8 +1036,8 @@
             // Управление кошельком
             updateWalletDisplay() {
                 document.getElementById('kissesBalance').textContent = this.data.wallet?.kisses || 0;
-                document.getElementById('massageBalance').textContent = this.data.wallet?.massage || 0;
                 document.getElementById('scratchesBalance').textContent = this.data.wallet?.scratches || 0;
+                document.getElementById('massageBalance').textContent = this.data.wallet?.massage || 0;
                 document.getElementById('licksBalance').textContent = this.data.wallet?.licks || 0;
             }
 
@@ -1220,14 +1049,6 @@
                 
                 // Анимация получения валюты
                 this.showCurrencyAnimation(type, amount);
-            }
-
-            adjustCurrency(type, amount) {
-                if (!this.data.wallet) this.data.wallet = {};
-                const newAmount = Math.max(0, (this.data.wallet[type] || 0) + amount);
-                this.data.wallet[type] = newAmount;
-                this.updateWalletDisplay();
-                this.save();
             }
 
             spendCurrency(costs) {
@@ -1248,20 +1069,11 @@
                 return true;
             }
 
-            canAfford(prices) {
-                for (const [type, amount] of Object.entries(prices)) {
-                    if (amount > 0 && (this.data.wallet[type] || 0) < amount) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-
             showCurrencyAnimation(type, amount) {
                 const icons = {
                     kisses: '💋',
-                    massage: '💆',
                     scratches: '🤗',
+                    massage: '💆',
                     licks: '🧽'
                 };
                 
@@ -1287,58 +1099,19 @@
             }
 
             addToCart(item) {
-                // Проверяем, может ли пользователь позволить себе это блюдо
-                if (!this.canAfford(item.prices)) {
-                    const icons = { kisses: '💋', massage: '💆', scratches: '🤗', licks: '🧽' };
-                    let missing = [];
-                    for (const [type, amount] of Object.entries(item.prices)) {
-                        if (amount > 0 && (this.data.wallet[type] || 0) < amount) {
-                            missing.push(`${icons[type]} ${amount - (this.data.wallet[type] || 0)}`);
-                        }
-                    }
-                    this.showNotification(`Недостаточно валюты! Не хватает: ${missing.join(', ')}`);
-                    return;
-                }
-
-                // Списываем валюту сразу при добавлении в корзину
-                this.spendCurrency(item.prices);
                 this.cart.push(item);
                 this.saveCart();
-                this.showNotification(`${item.name} добавлено в корзину! Валюта списана.`);
-                renderMenu(); // Обновляем отображение меню для кнопок
+                this.showNotification(`${item.name} добавлено в корзину!`);
             }
 
             removeFromCart(index) {
-                // Возвращаем валюту при удалении из корзины
-                const item = this.cart[index];
-                for (const [type, amount] of Object.entries(item.prices)) {
-                    if (amount > 0) {
-                        this.data.wallet[type] = (this.data.wallet[type] || 0) + amount;
-                    }
-                }
-                this.updateWalletDisplay();
-                this.save();
-                
                 this.cart.splice(index, 1);
                 this.saveCart();
-                renderMenu(); // Обновляем отображение меню для кнопок
             }
 
             clearCart() {
-                // Возвращаем всю валюту при очистке корзины
-                this.cart.forEach(item => {
-                    for (const [type, amount] of Object.entries(item.prices)) {
-                        if (amount > 0) {
-                            this.data.wallet[type] = (this.data.wallet[type] || 0) + amount;
-                        }
-                    }
-                });
-                this.updateWalletDisplay();
-                this.save();
-                
                 this.cart = [];
                 this.saveCart();
-                renderMenu(); // Обновляем отображение меню для кнопок
             }
 
             updateCartDisplay() {
@@ -1353,18 +1126,54 @@
                 }
             }
 
+            getTotalCost() {
+                const totals = { kisses: 0, scratches: 0, massage: 0, licks: 0 };
+                
+                this.cart.forEach(item => {
+                    if (item.prices.kisses) totals.kisses += item.prices.kisses;
+                    if (item.prices.scratches) totals.scratches += item.prices.scratches;
+                    if (item.prices.massage) totals.massage += item.prices.massage;
+                    if (item.prices.licks) totals.licks += item.prices.licks;
+                });
+                
+                return totals;
+            }
+
+            // Ежедневный бонус
+            checkDailyBonus() {
+                const lastBonus = localStorage.getItem('lastDailyBonus');
+                const today = new Date().toDateString();
+                
+                if (lastBonus !== today) {
+                    document.getElementById('dailyBonusBtn').disabled = false;
+                    document.getElementById('dailyBonusBtn').textContent = 'Получить ежедневный бонус';
+                } else {
+                    document.getElementById('dailyBonusBtn').disabled = true;
+                    document.getElementById('dailyBonusBtn').textContent = 'Бонус уже получен сегодня';
+                }
+            }
+
+            claimDailyBonus() {
+                const bonuses = {
+                    kisses: 5,
+                    scratches: 3,
+                    massage: 1,
+                    licks: 1
+                };
+                
+                for (const [type, amount] of Object.entries(bonuses)) {
+                    this.earnCurrency(type, amount);
+                }
+                
+                localStorage.setItem('lastDailyBonus', new Date().toDateString());
+                this.checkDailyBonus();
+                this.showNotification('Ежедневный бонус получен! +5💋 +3🤗 +1💆 +1🧽');
+            }
+
             showNotification(text, type = 'success') {
-                console.log('Показываем уведомление:', text, type);
                 const notification = document.getElementById('notification');
                 notification.textContent = text;
                 notification.classList.add('show');
-                
-                // Добавляем класс для типа уведомления
-                if (type === 'error') {
-                    notification.style.background = 'rgba(255, 71, 87, 0.9)';
-                } else {
-                    notification.style.background = 'rgba(0, 0, 0, 0.8)';
-                }
                 
                 setTimeout(() => {
                     notification.classList.remove('show');
@@ -1387,7 +1196,6 @@
             
             // Показываем/скрываем секции
             document.getElementById('addSection').style.display = mode === 'add' ? 'block' : 'none';
-            document.getElementById('walletSection').style.display = mode === 'wallet' ? 'block' : 'none';
             document.getElementById('earnSection').style.display = mode === 'earn' ? 'block' : 'none';
             document.getElementById('menuList').style.display = mode === 'view' ? 'grid' : 'none';
             document.querySelector('.search-box').style.display = mode === 'view' ? 'block' : 'none';
@@ -1464,15 +1272,15 @@
             
             const prices = {
                 kisses: parseInt(document.getElementById('kissPrice').value) || 0,
-                massage: parseInt(document.getElementById('massagePrice').value) || 0,
                 scratches: parseInt(document.getElementById('scratchPrice').value) || 0,
-                dishes: parseInt(document.getElementById('dishesPrice').value) || 0
+                massage: parseInt(document.getElementById('massagePrice').value) || 0,
+                licks: parseInt(document.getElementById('lickPrice').value) || 0
             };
             
             const item = {
                 name: dishName,
-                ingredients: ingredients || '',
-                recipe: recipe || '',
+                ingredients: ingredients,
+                recipe: recipe,
                 image: imageData,
                 prices: prices
             };
@@ -1503,7 +1311,7 @@
             
             const filteredItems = allItems.filter(item => 
                 item.name.toLowerCase().includes(searchTerm) ||
-                (item.ingredients && item.ingredients.toLowerCase().includes(searchTerm))
+                item.ingredients.toLowerCase().includes(searchTerm)
             );
             
             if (filteredItems.length === 0) {
@@ -1520,9 +1328,7 @@
             }
             
             menuList.innerHTML = filteredItems.map(item => {
-                const prices = item.prices || { kisses: item.kissPrice || 0 };
-                const canAfford = app.canAfford(prices);
-                const hasPrices = Object.values(prices).some(p => p > 0);
+                const prices = item.prices || { kisses: item.kissPrice || 3 };
                 
                 return `
                     <div class="menu-item">
@@ -1534,22 +1340,19 @@
                             ${item.image ? `<img src="${item.image}" alt="${item.name}" class="menu-item-image">` : ''}
                             <div class="menu-item-content">
                                 <h3>${item.name}</h3>
-                                ${item.ingredients ? `<p class="ingredients">Ингредиенты: ${item.ingredients}</p>` : ''}
-                                ${item.recipe ? `<p>${item.recipe}</p>` : ''}
-                                ${hasPrices ? `<div class="menu-item-prices">
+                                <p class="ingredients">Ингредиенты: ${item.ingredients}</p>
+                                <p>${item.recipe}</p>
+                                <div class="menu-item-prices">
                                     ${prices.kisses ? `<span class="price-tag kisses">💋 ${prices.kisses}</span>` : ''}
-                                    ${prices.massage ? `<span class="price-tag massage">💆 ${prices.massage}</span>` : ''}
                                     ${prices.scratches ? `<span class="price-tag scratches">🤗 ${prices.scratches}</span>` : ''}
+                                    ${prices.massage ? `<span class="price-tag massage">💆 ${prices.massage}</span>` : ''}
                                     ${prices.licks ? `<span class="price-tag licks">🧽 ${prices.licks}</span>` : ''}
-                                </div>` : '<p style="color: #999; font-style: italic;">Бесплатно</p>'}
+                                </div>
                             </div>
                         </div>
-                        ${hasPrices ? `<button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(item).replace(/'/g, "\\'")})'
-                            ${!canAfford ? 'disabled' : ''}>
-                            🛒 ${canAfford ? 'Добавить в корзину' : 'Недостаточно валюты'}
-                        </button>` : `<button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(item).replace(/'/g, "\\'")})'}>
-                            🛒 Добавить в корзину (бесплатно)
-                        </button>`}
+                        <button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(item).replace(/'/g, "\\'")})'>
+                            🛒 Добавить в корзину
+                        </button>
                     </div>
                 `;
             }).join('');
@@ -1566,14 +1369,14 @@
             // Заполняем форму
             document.getElementById('editId').value = id;
             document.getElementById('dishName').value = item.name;
-            document.getElementById('ingredients').value = item.ingredients || '';
-            document.getElementById('recipe').value = item.recipe || '';
+            document.getElementById('ingredients').value = item.ingredients;
+            document.getElementById('recipe').value = item.recipe;
             
             // Цены
             const prices = item.prices || { kisses: item.kissPrice || 0 };
             document.getElementById('kissPrice').value = prices.kisses || 0;
-            document.getElementById('massagePrice').value = prices.massage || 0;
             document.getElementById('scratchPrice').value = prices.scratches || 0;
+            document.getElementById('massagePrice').value = prices.massage || 0;
             document.getElementById('lickPrice').value = prices.licks || 0;
             
             // Изображение
@@ -1626,8 +1429,8 @@
                         <div class="cart-item-name">${item.name}</div>
                         <div class="cart-item-price">
                             ${item.prices.kisses ? `<span class="price-badge">💋 ${item.prices.kisses}</span>` : ''}
-                            ${item.prices.massage ? `<span class="price-badge">💆 ${item.prices.massage}</span>` : ''}
                             ${item.prices.scratches ? `<span class="price-badge">🤗 ${item.prices.scratches}</span>` : ''}
+                            ${item.prices.massage ? `<span class="price-badge">💆 ${item.prices.massage}</span>` : ''}
                             ${item.prices.licks ? `<span class="price-badge">🧽 ${item.prices.licks}</span>` : ''}
                         </div>
                     </div>
@@ -1635,13 +1438,17 @@
                 </div>
             `).join('');
             
-            cartTotal.innerHTML = `
-                <p style="color: #666; margin-bottom: 15px;">Валюта уже списана при добавлении в корзину</p>
-                <div class="cart-actions">
-                    <button onclick="clearCart()" style="background: #ff4757;">Очистить и вернуть валюту</button>
-                    <button onclick="checkout()">Готово к приготовлению</button>
-                </div>
+            // Показываем итого
+            const totals = app.getTotalCost();
+            const totalPrices = document.getElementById('totalPrices');
+            
+            totalPrices.innerHTML = `
+                ${totals.kisses ? `<span class="price-badge">💋 ${totals.kisses}</span> ` : ''}
+                ${totals.scratches ? `<span class="price-badge">🤗 ${totals.scratches}</span> ` : ''}
+                ${totals.massage ? `<span class="price-badge">💆 ${totals.massage}</span> ` : ''}
+                ${totals.licks ? `<span class="price-badge">🧽 ${totals.licks}</span> ` : ''}
             `;
+            
             cartTotal.style.display = 'block';
         }
 
@@ -1651,28 +1458,49 @@
         }
 
         function clearCart() {
-            if (confirm('Очистить корзину и вернуть валюту?')) {
+            if (confirm('Очистить корзину?')) {
                 app.clearCart();
                 renderCart();
             }
         }
 
         function checkout() {
-            app.showNotification('Заказ готов к приготовлению! Приятного аппетита! 🎉');
-            app.cart = [];
-            app.saveCart();
-            closeCart();
+            const totals = app.getTotalCost();
             
-            // Анимация конфетти
-            createConfetti();
+            // Проверяем, хватает ли валюты
+            let canAfford = true;
+            let missing = [];
+            
+            for (const [type, amount] of Object.entries(totals)) {
+                if (amount > 0 && (app.data.wallet[type] || 0) < amount) {
+                    canAfford = false;
+                    const icons = { kisses: '💋', scratches: '🤗', massage: '💆', licks: '🧽' };
+                    missing.push(`${icons[type]} ${amount - (app.data.wallet[type] || 0)}`);
+                }
+            }
+            
+            if (!canAfford) {
+                alert(`Недостаточно валюты!\nНе хватает: ${missing.join(', ')}\n\nЗаработайте больше валюты во вкладке "Заработать"!`);
+                return;
+            }
+            
+            // Списываем валюту
+            if (app.spendCurrency(totals)) {
+                app.showNotification('Заказ оформлен! Приятного аппетита! 🎉');
+                app.clearCart();
+                closeCart();
+                
+                // Анимация конфетти
+                createConfetti();
+            }
         }
 
         function earnCurrency(type, amount) {
             app.earnCurrency(type, amount);
         }
 
-        function adjustCurrency(type, amount) {
-            app.adjustCurrency(type, amount);
+        function claimDailyBonus() {
+            app.claimDailyBonus();
         }
 
         // Праздничная анимация
@@ -1692,50 +1520,6 @@
                     setTimeout(() => confetti.remove(), 3000);
                 }, i * 100);
             }
-        }
-
-        // Инициализация touch-событий для мобильных устройств
-        function initMobileOptimizations() {
-            // Предотвращаем двойное нажатие для зума
-            let lastTouchEnd = 0;
-            document.addEventListener('touchend', function (event) {
-                const now = (new Date()).getTime();
-                if (now - lastTouchEnd <= 300) {
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false);
-
-            // Улучшаем работу модальных окон на мобильных
-            document.addEventListener('touchmove', function(e) {
-                if (document.getElementById('cartModal').classList.contains('active')) {
-                    // Разрешаем скролл только внутри модального окна
-                    if (!e.target.closest('.cart-body')) {
-                        e.preventDefault();
-                    }
-                }
-            }, { passive: false });
-
-            // Автоматически скрываем виртуальную клавиатуру при отправке формы
-            const form = document.getElementById('menuForm');
-            form.addEventListener('submit', function() {
-                // Убираем фокус с активного элемента
-                if (document.activeElement) {
-                    document.activeElement.blur();
-                }
-            });
-
-            // Улучшаем работу с файлами на мобильных
-            const fileInput = document.getElementById('dishImage');
-            fileInput.addEventListener('change', function() {
-                // Скрываем клавиатуру после выбора файла
-                this.blur();
-            });
-        }
-
-        // Запускаем мобильные оптимизации
-        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-            document.addEventListener('DOMContentLoaded', initMobileOptimizations);
         }
 
         // CSS для анимации падения

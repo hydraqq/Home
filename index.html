@@ -262,32 +262,39 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            background: #f0f0f0;
-            padding: 5px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         .mode-tab {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             background: transparent;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 500;
+            color: #667eea;
         }
 
         .mode-tab.active {
-            background: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
         }
 
         .add-section {
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .form-group {
@@ -915,7 +922,6 @@
                 this.connectWebSocket();
                 this.loadCart();
                 this.updateWalletDisplay();
-                this.checkDailyBonus();
                 setTimeout(() => this.showLoading(false), 500);
             }
 
@@ -1039,6 +1045,29 @@
                 document.getElementById('scratchesBalance').textContent = this.data.wallet?.scratches || 0;
                 document.getElementById('massageBalance').textContent = this.data.wallet?.massage || 0;
                 document.getElementById('licksBalance').textContent = this.data.wallet?.licks || 0;
+                
+                // Обновляем также дисплеи в секции управления валютой
+                const kissesDisplay = document.getElementById('kissesDisplay');
+                const scratchesDisplay = document.getElementById('scratchesDisplay');
+                const massageDisplay = document.getElementById('massageDisplay');
+                const licksDisplay = document.getElementById('licksDisplay');
+                
+                if (kissesDisplay) kissesDisplay.textContent = this.data.wallet?.kisses || 0;
+                if (scratchesDisplay) scratchesDisplay.textContent = this.data.wallet?.scratches || 0;
+                if (massageDisplay) massageDisplay.textContent = this.data.wallet?.massage || 0;
+                if (licksDisplay) licksDisplay.textContent = this.data.wallet?.licks || 0;
+            }
+
+            adjustCurrency(type, amount) {
+                if (!this.data.wallet) this.data.wallet = {};
+                const newAmount = Math.max(0, (this.data.wallet[type] || 0) + amount);
+                this.data.wallet[type] = newAmount;
+                this.updateWalletDisplay();
+                this.save();
+                
+                if (amount > 0) {
+                    this.showCurrencyAnimation(type, amount);
+                }
             }
 
             earnCurrency(type, amount) {
@@ -1499,8 +1528,8 @@
             app.earnCurrency(type, amount);
         }
 
-        function claimDailyBonus() {
-            app.claimDailyBonus();
+        function adjustCurrency(type, amount) {
+            app.adjustCurrency(type, amount);
         }
 
         // Праздничная анимация

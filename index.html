@@ -592,49 +592,6 @@
             opacity: 0.3;
         }
 
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
-
-        .loading-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .loading-content {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         /* Анимация получения валюты */
         .currency-animation {
             position: fixed;
@@ -724,14 +681,6 @@
         <span id="statusText">Подключение...</span>
     </div>
 
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <p>Сервер просыпается...</p>
-            <p style="font-size: 14px; color: #666; margin-top: 10px;">Это может занять 10-30 секунд</p>
-        </div>
-    </div>
-
     <div class="cart-button" onclick="openCart()">
         🛒
         <span class="cart-count" id="cartCount" style="display: none;">0</span>
@@ -783,9 +732,9 @@
                     <div class="currency-name">Массаж</div>
                 </div>
                 <div class="currency-item">
-                    <div class="currency-icon">🧽</div>
+                    <div class="currency-icon">👅</div>
                     <div class="currency-amount" id="licksBalance">0</div>
-                    <div class="currency-name">Мытьё посуды</div>
+                    <div class="currency-name">Отлиз</div>
                 </div>
             </div>
         </div>
@@ -794,7 +743,7 @@
         <div class="mode-tabs">
             <button class="mode-tab active" onclick="switchMode('view')">📖 Просмотр</button>
             <button class="mode-tab" onclick="switchMode('add')">➕ Добавить</button>
-            <button class="mode-tab" onclick="switchMode('earn')">💰 Заработать</button>
+            <button class="mode-tab" onclick="switchMode('earn')">💰 Управление</button>
         </div>
         
         <!-- Режим добавления -->
@@ -847,8 +796,8 @@
                             <input type="number" id="massagePrice" min="0" value="0" placeholder="Массаж">
                         </div>
                         <div class="price-input-group">
-                            <span class="currency-label">🧽</span>
-                            <input type="number" id="lickPrice" min="0" value="0" placeholder="Мытьё посуды">
+                            <span class="currency-label">👅</span>
+                            <input type="number" id="lickPrice" min="0" value="0" placeholder="Отлиз">
                         </div>
                     </div>
                 </div>
@@ -857,32 +806,26 @@
             </form>
         </div>
 
-        <!-- Режим заработка -->
+        <!-- Режим управления валютой -->
         <div class="add-section" id="earnSection" style="display: none;">
-            <h2 style="margin-bottom: 20px; color: #333;">💰 Заработать валюту</h2>
-            <p style="margin-bottom: 20px; color: #666;">Нажимайте на кнопки, чтобы получить валюту!</p>
+            <h2 style="margin-bottom: 20px; color: #333;">💰 Управление валютой</h2>
+            <p style="margin-bottom: 20px; color: #666;">Используйте кнопки для изменения количества валюты:</p>
             
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
-                <button onclick="earnCurrency('kisses', 1)" style="background: linear-gradient(45deg, #ff6b6b, #ff8787);">
-                    💋 Получить поцелуй
-                </button>
-                <button onclick="earnCurrency('scratches', 1)" style="background: linear-gradient(45deg, #4ecdc4, #44a3aa);">
-                    🤗 Получить почухать
-                </button>
-                <button onclick="earnCurrency('massage', 1)" style="background: linear-gradient(45deg, #a8e063, #56ab2f);">
-                    💆 Получить массаж
-                </button>
-                <button onclick="earnCurrency('licks', 1)" style="background: linear-gradient(45deg, #f093fb, #f5576c);">
-                    🧽 Помыть посуду
-                </button>
-            </div>
-            
-            <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 10px;">
-                <h3 style="margin-bottom: 10px;">🎁 Ежедневный бонус</h3>
-                <p style="color: #666; margin-bottom: 15px;">Получайте бонусы каждый день!</p>
-                <button onclick="claimDailyBonus()" id="dailyBonusBtn">
-                    Получить ежедневный бонус
-                </button>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                
+                <!-- Поцелуи -->
+                <div style="background: rgba(255, 107, 107, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(255, 107, 107, 0.3);">
+                    <h3 style="color: #ff6b6b; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                        💋 Поцелуи
+                        <span style="background: #ff6b6b; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="kissesDisplay">0</span>
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <button onclick="adjustCurrency('licks', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
+                        <button onclick="adjustCurrency('licks', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
+                        <button onclick="adjustCurrency('licks', 1)" style="background: #667eea; color: white; width: 100%;">+1</button>
+                    </div>
+                </div>
+                
             </div>
         </div>
 
@@ -917,16 +860,10 @@
             }
 
             async init() {
-                this.showLoading(true);
                 await this.loadFromServer();
                 this.connectWebSocket();
                 this.loadCart();
                 this.updateWalletDisplay();
-                setTimeout(() => this.showLoading(false), 500);
-            }
-
-            showLoading(show) {
-                document.getElementById('loadingOverlay').classList.toggle('show', show);
             }
 
             connectWebSocket() {
@@ -1103,7 +1040,7 @@
                     kisses: '💋',
                     scratches: '🤗',
                     massage: '💆',
-                    licks: '🧽'
+                    licks: '👅'
                 };
                 
                 const anim = document.createElement('div');
@@ -1166,37 +1103,6 @@
                 });
                 
                 return totals;
-            }
-
-            // Ежедневный бонус
-            checkDailyBonus() {
-                const lastBonus = localStorage.getItem('lastDailyBonus');
-                const today = new Date().toDateString();
-                
-                if (lastBonus !== today) {
-                    document.getElementById('dailyBonusBtn').disabled = false;
-                    document.getElementById('dailyBonusBtn').textContent = 'Получить ежедневный бонус';
-                } else {
-                    document.getElementById('dailyBonusBtn').disabled = true;
-                    document.getElementById('dailyBonusBtn').textContent = 'Бонус уже получен сегодня';
-                }
-            }
-
-            claimDailyBonus() {
-                const bonuses = {
-                    kisses: 5,
-                    scratches: 3,
-                    massage: 1,
-                    licks: 1
-                };
-                
-                for (const [type, amount] of Object.entries(bonuses)) {
-                    this.earnCurrency(type, amount);
-                }
-                
-                localStorage.setItem('lastDailyBonus', new Date().toDateString());
-                this.checkDailyBonus();
-                this.showNotification('Ежедневный бонус получен! +5💋 +3🤗 +1💆 +1🧽');
             }
 
             showNotification(text, type = 'success') {
@@ -1375,7 +1281,7 @@
                                     ${prices.kisses ? `<span class="price-tag kisses">💋 ${prices.kisses}</span>` : ''}
                                     ${prices.scratches ? `<span class="price-tag scratches">🤗 ${prices.scratches}</span>` : ''}
                                     ${prices.massage ? `<span class="price-tag massage">💆 ${prices.massage}</span>` : ''}
-                                    ${prices.licks ? `<span class="price-tag licks">🧽 ${prices.licks}</span>` : ''}
+                                    ${prices.licks ? `<span class="price-tag licks">👅 ${prices.licks}</span>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -1460,7 +1366,7 @@
                             ${item.prices.kisses ? `<span class="price-badge">💋 ${item.prices.kisses}</span>` : ''}
                             ${item.prices.scratches ? `<span class="price-badge">🤗 ${item.prices.scratches}</span>` : ''}
                             ${item.prices.massage ? `<span class="price-badge">💆 ${item.prices.massage}</span>` : ''}
-                            ${item.prices.licks ? `<span class="price-badge">🧽 ${item.prices.licks}</span>` : ''}
+                            ${item.prices.licks ? `<span class="price-badge">👅 ${item.prices.licks}</span>` : ''}
                         </div>
                     </div>
                     <button class="action-btn delete-btn" onclick="removeFromCart(${index})">×</button>
@@ -1475,7 +1381,7 @@
                 ${totals.kisses ? `<span class="price-badge">💋 ${totals.kisses}</span> ` : ''}
                 ${totals.scratches ? `<span class="price-badge">🤗 ${totals.scratches}</span> ` : ''}
                 ${totals.massage ? `<span class="price-badge">💆 ${totals.massage}</span> ` : ''}
-                ${totals.licks ? `<span class="price-badge">🧽 ${totals.licks}</span> ` : ''}
+                ${totals.licks ? `<span class="price-badge">👅 ${totals.licks}</span> ` : ''}
             `;
             
             cartTotal.style.display = 'block';
@@ -1503,13 +1409,13 @@
             for (const [type, amount] of Object.entries(totals)) {
                 if (amount > 0 && (app.data.wallet[type] || 0) < amount) {
                     canAfford = false;
-                    const icons = { kisses: '💋', scratches: '🤗', massage: '💆', licks: '🧽' };
+                    const icons = { kisses: '💋', scratches: '🤗', massage: '💆', licks: '👅' };
                     missing.push(`${icons[type]} ${amount - (app.data.wallet[type] || 0)}`);
                 }
             }
             
             if (!canAfford) {
-                alert(`Недостаточно валюты!\nНе хватает: ${missing.join(', ')}\n\nЗаработайте больше валюты во вкладке "Заработать"!`);
+                alert(`Недостаточно валюты!\nНе хватает: ${missing.join(', ')}\n\nЗаработайте больше валюты во вкладке "Управление"!`);
                 return;
             }
             
@@ -1522,10 +1428,6 @@
                 // Анимация конфетти
                 createConfetti();
             }
-        }
-
-        function earnCurrency(type, amount) {
-            app.earnCurrency(type, amount);
         }
 
         function adjustCurrency(type, amount) {
@@ -1564,4 +1466,43 @@
         document.head.appendChild(style);
     </script>
 </body>
-</html>
+</html>="adjustCurrency('kisses', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
+                        <button onclick="adjustCurrency('kisses', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
+                        <button onclick="adjustCurrency('kisses', 5)" style="background: #667eea; color: white; width: 100%;">+5</button>
+                    </div>
+                </div>
+
+                <!-- Почухать -->
+                <div style="background: rgba(76, 205, 196, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(76, 205, 196, 0.3);">
+                    <h3 style="color: #4ecdc4; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                        🤗 Почухать
+                        <span style="background: #4ecdc4; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="scratchesDisplay">0</span>
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <button onclick="adjustCurrency('scratches', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
+                        <button onclick="adjustCurrency('scratches', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
+                        <button onclick="adjustCurrency('scratches', 3)" style="background: #667eea; color: white; width: 100%;">+3</button>
+                    </div>
+                </div>
+
+                <!-- Массаж -->
+                <div style="background: rgba(168, 224, 99, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(168, 224, 99, 0.3);">
+                    <h3 style="color: #a8e063; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                        💆 Массаж
+                        <span style="background: #a8e063; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="massageDisplay">0</span>
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <button onclick="adjustCurrency('massage', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
+                        <button onclick="adjustCurrency('massage', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
+                        <button onclick="adjustCurrency('massage', 2)" style="background: #667eea; color: white; width: 100%;">+2</button>
+                    </div>
+                </div>
+
+                <!-- Отлиз -->
+                <div style="background: rgba(240, 147, 251, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(240, 147, 251, 0.3);">
+                    <h3 style="color: #f093fb; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                        👅 Отлиз
+                        <span style="background: #f093fb; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="licksDisplay">0</span>
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <button onclick

@@ -2,9 +2,28 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Мое Меню</title>
     <style>
+        /* Общие стили для touch-устройств */
+        * {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+            -webkit-touch-callout: none;
+        }
+        
+        input, textarea, button, select {
+            -webkit-appearance: none;
+            border-radius: 8px;
+        }
+        
+        /* Предотвращаем зум при фокусе на input */
+        input[type="text"], input[type="number"], textarea {
+            font-size: 16px !important;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -1619,6 +1638,50 @@
                     setTimeout(() => confetti.remove(), 3000);
                 }, i * 100);
             }
+        }
+
+        // Инициализация touch-событий для мобильных устройств
+        function initMobileOptimizations() {
+            // Предотвращаем двойное нажатие для зума
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+
+            // Улучшаем работу модальных окон на мобильных
+            document.addEventListener('touchmove', function(e) {
+                if (document.getElementById('cartModal').classList.contains('active')) {
+                    // Разрешаем скролл только внутри модального окна
+                    if (!e.target.closest('.cart-body')) {
+                        e.preventDefault();
+                    }
+                }
+            }, { passive: false });
+
+            // Автоматически скрываем виртуальную клавиатуру при отправке формы
+            const form = document.getElementById('menuForm');
+            form.addEventListener('submit', function() {
+                // Убираем фокус с активного элемента
+                if (document.activeElement) {
+                    document.activeElement.blur();
+                }
+            });
+
+            // Улучшаем работу с файлами на мобильных
+            const fileInput = document.getElementById('dishImage');
+            fileInput.addEventListener('change', function() {
+                // Скрываем клавиатуру после выбора файла
+                this.blur();
+            });
+        }
+
+        // Запускаем мобильные оптимизации
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            document.addEventListener('DOMContentLoaded', initMobileOptimizations);
         }
 
         // CSS для анимации падения

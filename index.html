@@ -1,4 +1,47 @@
-<!DOCTYPE html>
+// Обработка формы
+        document.getElementById('menuForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const editId = document.getElementById('editId').value;
+            const dishName = document.getElementById('dishName').value;
+            const ingredients = document.getElementById('ingredients').value;
+            const recipe = document.getElementById('recipe').value;
+            const imagePreview = document.getElementById('imagePreview');
+            const imageData = imagePreview.style.display !== 'none' ? imagePreview.src : null;
+            
+            // Проверяем, что хотя бы название указано
+            if (!dishName.trim()) {
+                alert('Пожалуйста, укажите название блюда');
+                return;
+            }
+            
+            const prices = {
+                kisses: parseInt(document.getElementById('kissPrice').value) || 0,
+                scratches: parseInt(document.getElementById('scratchPrice').value) || 0,
+                massage: parseInt(document.getElementById('massagePrice').value) || 0,
+                dishes: parseInt(document.getElementById('dishesPrice').value) || 0
+            };
+            
+            const item = {
+                name: dishName,
+                ingredients: ingredients,
+                recipe: recipe,
+                image: imageData,
+                prices: prices
+            };
+            
+            if (editId) {
+                app.update(editId, item);
+                app.showNotification('Блюдо обновлено!');
+            } else {
+                app.add(item);
+                app.showNotification('Блюдо добавлено!');
+            }
+            
+            // Переключаемся на просмотр
+            document.querySelector('.mode-tab').click();
+            renderMenu();
+        });<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +52,30 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        /* Кнопки изменения валюты */
+        .currency-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .currency-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .currency-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
         }
 
         body {
@@ -58,12 +125,12 @@
 
         .container {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 0 auto 0 0;
+            margin-right: 240px;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            position: relative;
         }
 
         h1 {
@@ -76,7 +143,7 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Компактный кошелек сбоку */
+        /* Кошелек */
         .wallet {
             position: fixed;
             top: 80px;
@@ -86,47 +153,57 @@
             padding: 15px;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            z-index: 999;
-            min-width: 120px;
+            z-index: 500;
+            max-width: 200px;
         }
 
         .wallet h3 {
             margin-bottom: 10px;
-            font-size: 1em;
+            font-size: 1.1em;
             text-align: center;
         }
 
         .wallet-grid {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 8px;
         }
 
         .currency-item {
             background: rgba(255, 255, 255, 0.2);
             padding: 8px;
-            border-radius: 8px;
-            text-align: center;
+            border-radius: 10px;
             backdrop-filter: blur(10px);
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 8px;
+            gap: 10px;
         }
 
         .currency-item:hover {
             background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            transform: translateX(-5px);
         }
 
         .currency-icon {
-            font-size: 1.2em;
+            font-size: 1.5em;
+        }
+
+        .currency-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .currency-amount {
-            font-size: 1em;
+            font-size: 1.1em;
             font-weight: bold;
+        }
+
+        .currency-name {
+            font-size: 0.8em;
+            opacity: 0.9;
         }
 
         /* Корзина */
@@ -266,39 +343,35 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px;
-            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 5px;
+            border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
         }
 
         .mode-tab {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             background: transparent;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 500;
-            color: #667eea;
+            color: #666;
         }
 
         .mode-tab.active {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .add-section {
-            background: rgba(255, 255, 255, 0.9);
+            background: #f8f9fa;
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .form-group {
@@ -499,12 +572,12 @@
             color: white;
         }
 
-        .price-tag.massage {
+        .price-tag.scratches {
             background: linear-gradient(45deg, #4ecdc4, #44a3aa);
             color: white;
         }
 
-        .price-tag.scratches {
+        .price-tag.massage {
             background: linear-gradient(45deg, #a8e063, #56ab2f);
             color: white;
         }
@@ -565,11 +638,6 @@
 
         .add-to-cart-btn:hover {
             box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-        }
-
-        .add-to-cart-btn:disabled {
-            background: #ccc;
-            color: #666;
         }
 
         .search-box {
@@ -699,45 +767,25 @@
             display: block;
         }
 
-        /* Управление валютой */
-        .currency-controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 5px;
-        }
-
-        .currency-btn {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            border: none;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .currency-btn.minus {
-            background: #ff4757;
-        }
-
-        .currency-btn.plus {
-            background: #2ed573;
-        }
-
-        .currency-btn:hover {
-            transform: scale(1.1);
+        @media (max-width: 1000px) {
+            .container {
+                margin-right: auto;
+            }
+            
+            .wallet {
+                position: static;
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .wallet-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
-                margin-right: 140px;
             }
             
             h1 {
@@ -753,20 +801,12 @@
                 height: 200px;
             }
 
+            .wallet-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
             .price-inputs {
                 grid-template-columns: 1fr;
-            }
-
-            .wallet {
-                position: static;
-                margin-bottom: 20px;
-                width: 100%;
-            }
-
-            .wallet-grid {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
             }
         }
     </style>
@@ -788,45 +828,6 @@
     <div class="cart-button" onclick="openCart()">
         🛒
         <span class="cart-count" id="cartCount" style="display: none;">0</span>
-    </div>
-
-    <!-- Компактный кошелек -->
-    <div class="wallet">
-        <h3>💰 Кошелек</h3>
-        <div class="wallet-grid">
-            <div class="currency-item">
-                <div class="currency-icon">💋</div>
-                <div class="currency-controls">
-                    <button class="currency-btn minus" onclick="adjustCurrency('kisses', -1)">-</button>
-                    <div class="currency-amount" id="kissesBalance">0</div>
-                    <button class="currency-btn plus" onclick="adjustCurrency('kisses', 1)">+</button>
-                </div>
-            </div>
-            <div class="currency-item">
-                <div class="currency-icon">💆</div>
-                <div class="currency-controls">
-                    <button class="currency-btn minus" onclick="adjustCurrency('massage', -1)">-</button>
-                    <div class="currency-amount" id="massageBalance">0</div>
-                    <button class="currency-btn plus" onclick="adjustCurrency('massage', 1)">+</button>
-                </div>
-            </div>
-            <div class="currency-item">
-                <div class="currency-icon">🤗</div>
-                <div class="currency-controls">
-                    <button class="currency-btn minus" onclick="adjustCurrency('scratches', -1)">-</button>
-                    <div class="currency-amount" id="scratchesBalance">0</div>
-                    <button class="currency-btn plus" onclick="adjustCurrency('scratches', 1)">+</button>
-                </div>
-            </div>
-            <div class="currency-item">
-                <div class="currency-icon">🧽</div>
-                <div class="currency-controls">
-                    <button class="currency-btn minus" onclick="adjustCurrency('licks', -1)">-</button>
-                    <div class="currency-amount" id="licksBalance">0</div>
-                    <button class="currency-btn plus" onclick="adjustCurrency('licks', 1)">+</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Модальное окно корзины -->
@@ -852,6 +853,65 @@
 
     <div class="notification" id="notification"></div>
 
+    <!-- Кошелек -->
+    <div class="wallet">
+        <h3>💰 Кошелек</h3>
+        <div class="wallet-grid">
+            <div class="currency-item">
+                <div class="currency-icon">💋</div>
+                <div class="currency-info">
+                    <div>
+                        <div class="currency-amount" id="kissesBalance">0</div>
+                        <div class="currency-name">Поцелуи</div>
+                    </div>
+                    <div class="currency-controls">
+                        <button class="currency-btn" onclick="changeCurrency('kisses', -1)">-</button>
+                        <button class="currency-btn" onclick="changeCurrency('kisses', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="currency-item">
+                <div class="currency-icon">💆</div>
+                <div class="currency-info">
+                    <div>
+                        <div class="currency-amount" id="massageBalance">0</div>
+                        <div class="currency-name">Массаж</div>
+                    </div>
+                    <div class="currency-controls">
+                        <button class="currency-btn" onclick="changeCurrency('massage', -1)">-</button>
+                        <button class="currency-btn" onclick="changeCurrency('massage', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="currency-item">
+                <div class="currency-icon">🤗</div>
+                <div class="currency-info">
+                    <div>
+                        <div class="currency-amount" id="scratchesBalance">0</div>
+                        <div class="currency-name">Почухать</div>
+                    </div>
+                    <div class="currency-controls">
+                        <button class="currency-btn" onclick="changeCurrency('scratches', -1)">-</button>
+                        <button class="currency-btn" onclick="changeCurrency('scratches', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="currency-item">
+                <div class="currency-icon">🧽</div>
+                <div class="currency-info">
+                    <div>
+                        <div class="currency-amount" id="dishesBalance">0</div>
+                        <div class="currency-name">Мытьё посуды</div>
+                    </div>
+                    <div class="currency-controls">
+                        <button class="currency-btn" onclick="changeCurrency('dishes', -1)">-</button>
+                        <button class="currency-btn" onclick="changeCurrency('dishes', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <h1>🍳 Мое Меню</h1>
 
@@ -869,7 +929,7 @@
                 <input type="hidden" id="editId" value="">
                 
                 <div class="form-group">
-                    <label for="dishImage">Фото блюда (необязательно)</label>
+                    <label for="dishImage">Фото блюда</label>
                     <div class="image-upload" id="imageUploadArea">
                         <input type="file" id="dishImage" accept="image/*">
                         <div id="uploadText">
@@ -882,26 +942,26 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="dishName">Название блюда *</label>
-                    <input type="text" id="dishName" required placeholder="Например: Борщ">
+                    <label for="dishName">Название блюда</label>
+                    <input type="text" id="dishName" placeholder="Например: Борщ">
                 </div>
                 
                 <div class="form-group">
-                    <label for="ingredients">Ингредиенты (необязательно)</label>
+                    <label for="ingredients">Ингредиенты</label>
                     <input type="text" id="ingredients" placeholder="Свекла, капуста, морковь...">
                 </div>
                 
                 <div class="form-group">
-                    <label for="recipe">Рецепт (необязательно)</label>
+                    <label for="recipe">Рецепт</label>
                     <textarea id="recipe" placeholder="Описание приготовления..."></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label>Цена в разных валютах (необязательно):</label>
+                    <label>Цена в разных валютах:</label>
                     <div class="price-inputs">
                         <div class="price-input-group">
                             <span class="currency-label">💋</span>
-                            <input type="number" id="kissPrice" min="0" value="0" placeholder="Поцелуи">
+                            <input type="number" id="kissPrice" min="0" value="3" placeholder="Поцелуи">
                         </div>
                         <div class="price-input-group">
                             <span class="currency-label">💆</span>
@@ -913,7 +973,7 @@
                         </div>
                         <div class="price-input-group">
                             <span class="currency-label">🧽</span>
-                            <input type="number" id="lickPrice" min="0" value="0" placeholder="Мытьё посуды">
+                            <input type="number" id="dishesPrice" min="0" value="0" placeholder="Мытьё посуды">
                         </div>
                     </div>
                 </div>
@@ -924,21 +984,21 @@
 
         <!-- Режим заработка -->
         <div class="add-section" id="earnSection" style="display: none;">
-            <h2 style="margin-bottom: 20px; color: #333;">💰 Заработать валюту</h2>
-            <p style="margin-bottom: 20px; color: #666;">Нажимайте на кнопки, чтобы получить валюту!</p>
+            <h2 style="margin-bottom: 20px; color: #333;">💰 Управление валютой</h2>
+            <p style="margin-bottom: 20px; color: #666;">Нажимайте на кнопки +/- в кошельке для изменения валюты!</p>
             
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
-                <button onclick="earnCurrency('kisses', 1)" style="background: linear-gradient(45deg, #ff6b6b, #ff8787);">
-                    💋 Получить поцелуй
+                <button onclick="earnCurrency('kisses', 5)" style="background: linear-gradient(45deg, #ff6b6b, #ff8787);">
+                    💋 +5 Поцелуев
                 </button>
-                <button onclick="earnCurrency('massage', 1)" style="background: linear-gradient(45deg, #4ecdc4, #44a3aa);">
-                    💆 Получить массаж
+                <button onclick="earnCurrency('massage', 2)" style="background: linear-gradient(45deg, #a8e063, #56ab2f);">
+                    💆 +2 Массажа
                 </button>
-                <button onclick="earnCurrency('scratches', 1)" style="background: linear-gradient(45deg, #a8e063, #56ab2f);">
-                    🤗 Получить почухать
+                <button onclick="earnCurrency('scratches', 3)" style="background: linear-gradient(45deg, #4ecdc4, #44a3aa);">
+                    🤗 +3 Почухать
                 </button>
-                <button onclick="earnCurrency('licks', 1)" style="background: linear-gradient(45deg, #f093fb, #f5576c);">
-                    🧽 Помыть посуду
+                <button onclick="earnCurrency('dishes', 1)" style="background: linear-gradient(45deg, #f093fb, #f5576c);">
+                    🧽 +1 Мытьё посуды
                 </button>
             </div>
         </div>
@@ -962,7 +1022,7 @@
         // Класс для управления приложением
         class MenuApp {
             constructor() {
-                this.data = { menu: [], wallet: { kisses: 10, massage: 5, scratches: 2, licks: 1 } };
+                this.data = { menu: [], wallet: { kisses: 10, scratches: 5, massage: 2, dishes: 1 } };
                 this.cart = [];
                 this.ws = null;
                 this.serverUrl = window.location.origin;
@@ -979,6 +1039,7 @@
                 this.connectWebSocket();
                 this.loadCart();
                 this.updateWalletDisplay();
+                this.checkDailyBonus();
                 setTimeout(() => this.showLoading(false), 500);
             }
 
@@ -1043,7 +1104,12 @@
                         this.data = await response.json();
                         // Инициализируем кошелек если его нет
                         if (!this.data.wallet) {
-                            this.data.wallet = { kisses: 10, massage: 5, scratches: 2, licks: 1 };
+                            this.data.wallet = { kisses: 10, scratches: 5, massage: 2, dishes: 1 };
+                        }
+                        // Миграция старых данных
+                        if (this.data.wallet.licks !== undefined) {
+                            this.data.wallet.dishes = this.data.wallet.licks;
+                            delete this.data.wallet.licks;
                         }
                         renderMenu();
                     }
@@ -1099,9 +1165,23 @@
             // Управление кошельком
             updateWalletDisplay() {
                 document.getElementById('kissesBalance').textContent = this.data.wallet?.kisses || 0;
-                document.getElementById('massageBalance').textContent = this.data.wallet?.massage || 0;
                 document.getElementById('scratchesBalance').textContent = this.data.wallet?.scratches || 0;
-                document.getElementById('licksBalance').textContent = this.data.wallet?.licks || 0;
+                document.getElementById('massageBalance').textContent = this.data.wallet?.massage || 0;
+                document.getElementById('dishesBalance').textContent = this.data.wallet?.dishes || 0;
+            }
+
+            changeCurrency(type, amount) {
+                if (!this.data.wallet) this.data.wallet = {};
+                const newAmount = (this.data.wallet[type] || 0) + amount;
+                if (newAmount >= 0) {
+                    this.data.wallet[type] = newAmount;
+                    this.updateWalletDisplay();
+                    this.save();
+                    
+                    if (amount > 0) {
+                        this.showCurrencyAnimation(type, amount);
+                    }
+                }
             }
 
             earnCurrency(type, amount) {
@@ -1112,14 +1192,6 @@
                 
                 // Анимация получения валюты
                 this.showCurrencyAnimation(type, amount);
-            }
-
-            adjustCurrency(type, amount) {
-                if (!this.data.wallet) this.data.wallet = {};
-                const newAmount = Math.max(0, (this.data.wallet[type] || 0) + amount);
-                this.data.wallet[type] = newAmount;
-                this.updateWalletDisplay();
-                this.save();
             }
 
             spendCurrency(costs) {
@@ -1140,21 +1212,12 @@
                 return true;
             }
 
-            canAfford(prices) {
-                for (const [type, amount] of Object.entries(prices)) {
-                    if (amount > 0 && (this.data.wallet[type] || 0) < amount) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-
             showCurrencyAnimation(type, amount) {
                 const icons = {
                     kisses: '💋',
-                    massage: '💆',
                     scratches: '🤗',
-                    licks: '🧽'
+                    massage: '💆',
+                    dishes: '🧽'
                 };
                 
                 const anim = document.createElement('div');
@@ -1179,58 +1242,19 @@
             }
 
             addToCart(item) {
-                // Проверяем, может ли пользователь позволить себе это блюдо
-                if (!this.canAfford(item.prices)) {
-                    const icons = { kisses: '💋', massage: '💆', scratches: '🤗', licks: '🧽' };
-                    let missing = [];
-                    for (const [type, amount] of Object.entries(item.prices)) {
-                        if (amount > 0 && (this.data.wallet[type] || 0) < amount) {
-                            missing.push(`${icons[type]} ${amount - (this.data.wallet[type] || 0)}`);
-                        }
-                    }
-                    this.showNotification(`Недостаточно валюты! Не хватает: ${missing.join(', ')}`);
-                    return;
-                }
-
-                // Списываем валюту сразу при добавлении в корзину
-                this.spendCurrency(item.prices);
                 this.cart.push(item);
                 this.saveCart();
-                this.showNotification(`${item.name} добавлено в корзину! Валюта списана.`);
-                renderMenu(); // Обновляем отображение меню для кнопок
+                this.showNotification(`${item.name} добавлено в корзину!`);
             }
 
             removeFromCart(index) {
-                // Возвращаем валюту при удалении из корзины
-                const item = this.cart[index];
-                for (const [type, amount] of Object.entries(item.prices)) {
-                    if (amount > 0) {
-                        this.data.wallet[type] = (this.data.wallet[type] || 0) + amount;
-                    }
-                }
-                this.updateWalletDisplay();
-                this.save();
-                
                 this.cart.splice(index, 1);
                 this.saveCart();
-                renderMenu(); // Обновляем отображение меню для кнопок
             }
 
             clearCart() {
-                // Возвращаем всю валюту при очистке корзины
-                this.cart.forEach(item => {
-                    for (const [type, amount] of Object.entries(item.prices)) {
-                        if (amount > 0) {
-                            this.data.wallet[type] = (this.data.wallet[type] || 0) + amount;
-                        }
-                    }
-                });
-                this.updateWalletDisplay();
-                this.save();
-                
                 this.cart = [];
                 this.saveCart();
-                renderMenu(); // Обновляем отображение меню для кнопок
             }
 
             updateCartDisplay() {
@@ -1243,6 +1267,28 @@
                 } else {
                     countEl.style.display = 'none';
                 }
+            }
+
+            getTotalCost() {
+                const totals = { kisses: 0, scratches: 0, massage: 0, dishes: 0 };
+                
+                this.cart.forEach(item => {
+                    if (item.prices.kisses) totals.kisses += item.prices.kisses;
+                    if (item.prices.scratches) totals.scratches += item.prices.scratches;
+                    if (item.prices.massage) totals.massage += item.prices.massage;
+                    if (item.prices.dishes) totals.dishes += item.prices.dishes;
+                });
+                
+                return totals;
+            }
+
+            // Ежедневный бонус - удалено
+            checkDailyBonus() {
+                // Функция оставлена пустой для совместимости
+            }
+
+            claimDailyBonus() {
+                // Функция оставлена пустой для совместимости
             }
 
             showNotification(text, type = 'success') {
@@ -1347,15 +1393,15 @@
             
             const prices = {
                 kisses: parseInt(document.getElementById('kissPrice').value) || 0,
-                massage: parseInt(document.getElementById('massagePrice').value) || 0,
                 scratches: parseInt(document.getElementById('scratchPrice').value) || 0,
+                massage: parseInt(document.getElementById('massagePrice').value) || 0,
                 licks: parseInt(document.getElementById('lickPrice').value) || 0
             };
             
             const item = {
                 name: dishName,
-                ingredients: ingredients || '',
-                recipe: recipe || '',
+                ingredients: ingredients,
+                recipe: recipe,
                 image: imageData,
                 prices: prices
             };
@@ -1386,7 +1432,7 @@
             
             const filteredItems = allItems.filter(item => 
                 item.name.toLowerCase().includes(searchTerm) ||
-                (item.ingredients && item.ingredients.toLowerCase().includes(searchTerm))
+                item.ingredients.toLowerCase().includes(searchTerm)
             );
             
             if (filteredItems.length === 0) {
@@ -1403,9 +1449,7 @@
             }
             
             menuList.innerHTML = filteredItems.map(item => {
-                const prices = item.prices || { kisses: item.kissPrice || 0 };
-                const canAfford = app.canAfford(prices);
-                const hasPrices = Object.values(prices).some(p => p > 0);
+                const prices = item.prices || { kisses: item.kissPrice || 3 };
                 
                 return `
                     <div class="menu-item">
@@ -1417,22 +1461,19 @@
                             ${item.image ? `<img src="${item.image}" alt="${item.name}" class="menu-item-image">` : ''}
                             <div class="menu-item-content">
                                 <h3>${item.name}</h3>
-                                ${item.ingredients ? `<p class="ingredients">Ингредиенты: ${item.ingredients}</p>` : ''}
-                                ${item.recipe ? `<p>${item.recipe}</p>` : ''}
-                                ${hasPrices ? `<div class="menu-item-prices">
+                                <p class="ingredients">Ингредиенты: ${item.ingredients}</p>
+                                <p>${item.recipe}</p>
+                                <div class="menu-item-prices">
                                     ${prices.kisses ? `<span class="price-tag kisses">💋 ${prices.kisses}</span>` : ''}
                                     ${prices.massage ? `<span class="price-tag massage">💆 ${prices.massage}</span>` : ''}
                                     ${prices.scratches ? `<span class="price-tag scratches">🤗 ${prices.scratches}</span>` : ''}
-                                    ${prices.licks ? `<span class="price-tag licks">🧽 ${prices.licks}</span>` : ''}
-                                </div>` : '<p style="color: #999; font-style: italic;">Бесплатно</p>'}
+                                    ${prices.dishes ? `<span class="price-tag licks">🧽 ${prices.dishes}</span>` : ''}
+                                </div>
                             </div>
                         </div>
-                        ${hasPrices ? `<button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(item).replace(/'/g, "\\'")})'
-                            ${!canAfford ? 'disabled' : ''}>
-                            🛒 ${canAfford ? 'Добавить в корзину' : 'Недостаточно валюты'}
-                        </button>` : `<button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(item).replace(/'/g, "\\'")})'}>
-                            🛒 Добавить в корзину (бесплатно)
-                        </button>`}
+                        <button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(item).replace(/'/g, "\\'")})'>
+                            🛒 Добавить в корзину
+                        </button>
                     </div>
                 `;
             }).join('');
@@ -1449,15 +1490,15 @@
             // Заполняем форму
             document.getElementById('editId').value = id;
             document.getElementById('dishName').value = item.name;
-            document.getElementById('ingredients').value = item.ingredients || '';
-            document.getElementById('recipe').value = item.recipe || '';
+            document.getElementById('ingredients').value = item.ingredients;
+            document.getElementById('recipe').value = item.recipe;
             
             // Цены
             const prices = item.prices || { kisses: item.kissPrice || 0 };
             document.getElementById('kissPrice').value = prices.kisses || 0;
-            document.getElementById('massagePrice').value = prices.massage || 0;
             document.getElementById('scratchPrice').value = prices.scratches || 0;
-            document.getElementById('lickPrice').value = prices.licks || 0;
+            document.getElementById('massagePrice').value = prices.massage || 0;
+            document.getElementById('dishesPrice').value = prices.dishes || prices.licks || 0;
             
             // Изображение
             if (item.image) {
@@ -1480,7 +1521,28 @@
 
         // Функции корзины
         function addToCart(item) {
-            app.addToCart(item);
+            // Проверяем, хватает ли валюты
+            const costs = item.prices;
+            let canAfford = true;
+            let missing = [];
+            
+            for (const [type, amount] of Object.entries(costs)) {
+                if (amount > 0 && (app.data.wallet[type] || 0) < amount) {
+                    canAfford = false;
+                    const icons = { kisses: '💋', scratches: '🤗', massage: '💆', dishes: '🧽' };
+                    missing.push(`${icons[type]} ${amount - (app.data.wallet[type] || 0)}`);
+                }
+            }
+            
+            if (!canAfford) {
+                alert(`Недостаточно валюты для добавления в корзину!\nНе хватает: ${missing.join(', ')}\n\nЗаработайте больше валюты во вкладке "Заработать"!`);
+                return;
+            }
+            
+            // Списываем валюту сразу при добавлении в корзину
+            if (app.spendCurrency(costs)) {
+                app.addToCart(item);
+            }
         }
 
         function openCart() {
@@ -1511,39 +1573,62 @@
                             ${item.prices.kisses ? `<span class="price-badge">💋 ${item.prices.kisses}</span>` : ''}
                             ${item.prices.massage ? `<span class="price-badge">💆 ${item.prices.massage}</span>` : ''}
                             ${item.prices.scratches ? `<span class="price-badge">🤗 ${item.prices.scratches}</span>` : ''}
-                            ${item.prices.licks ? `<span class="price-badge">🧽 ${item.prices.licks}</span>` : ''}
+                            ${item.prices.dishes ? `<span class="price-badge">🧽 ${item.prices.dishes}</span>` : ''}
                         </div>
                     </div>
                     <button class="action-btn delete-btn" onclick="removeFromCart(${index})">×</button>
                 </div>
             `).join('');
             
-            cartTotal.innerHTML = `
-                <p style="color: #666; margin-bottom: 15px;">Валюта уже списана при добавлении в корзину</p>
-                <div class="cart-actions">
-                    <button onclick="clearCart()" style="background: #ff4757;">Очистить и вернуть валюту</button>
-                    <button onclick="checkout()">Готово к приготовлению</button>
-                </div>
+            // Показываем итого
+            const totals = app.getTotalCost();
+            const totalPrices = document.getElementById('totalPrices');
+            
+            totalPrices.innerHTML = `
+                ${totals.kisses ? `<span class="price-badge">💋 ${totals.kisses}</span> ` : ''}
+                ${totals.massage ? `<span class="price-badge">💆 ${totals.massage}</span> ` : ''}
+                ${totals.scratches ? `<span class="price-badge">🤗 ${totals.scratches}</span> ` : ''}
+                ${totals.dishes ? `<span class="price-badge">🧽 ${totals.dishes}</span> ` : ''}
             `;
+            
             cartTotal.style.display = 'block';
         }
 
         function removeFromCart(index) {
+            // Возвращаем валюту при удалении из корзины
+            const item = app.cart[index];
+            if (item && item.prices) {
+                for (const [type, amount] of Object.entries(item.prices)) {
+                    if (amount > 0) {
+                        app.earnCurrency(type, amount);
+                    }
+                }
+            }
             app.removeFromCart(index);
             renderCart();
         }
 
         function clearCart() {
-            if (confirm('Очистить корзину и вернуть валюту?')) {
+            if (confirm('Очистить корзину? Вся валюта будет возвращена.')) {
+                // Возвращаем всю валюту
+                app.cart.forEach(item => {
+                    if (item && item.prices) {
+                        for (const [type, amount] of Object.entries(item.prices)) {
+                            if (amount > 0) {
+                                app.earnCurrency(type, amount);
+                            }
+                        }
+                    }
+                });
                 app.clearCart();
                 renderCart();
             }
         }
 
         function checkout() {
-            app.showNotification('Заказ готов к приготовлению! Приятного аппетита! 🎉');
-            app.cart = [];
-            app.saveCart();
+            // Так как валюта уже списана при добавлении в корзину, просто оформляем заказ
+            app.showNotification('Заказ оформлен! Приятного аппетита! 🎉');
+            app.clearCart();
             closeCart();
             
             // Анимация конфетти
@@ -1554,8 +1639,8 @@
             app.earnCurrency(type, amount);
         }
 
-        function adjustCurrency(type, amount) {
-            app.adjustCurrency(type, amount);
+        function changeCurrency(type, amount) {
+            app.changeCurrency(type, amount);
         }
 
         // Праздничная анимация

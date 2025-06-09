@@ -15,13 +15,18 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Кэш данных для быстрого доступа
 let menuCache = { 
     menu: [], 
-    wallet: { kisses: 10, massage: 5, scratches: 2, dishes: 1 },
+    wallet: { kisses: 10, scratches: 5, massage: 2, licks: 1 },
     lastUpdated: new Date().toISOString() 
 };
 
 // Настройка Express
 app.use(express.static(__dirname));
-app.use(express.json({ limit: '10mb' })); // Увеличиваем лимит для изображений
+app.use(express.json({ limit: '10mb' }));
+
+// Обработка ошибок WebSocket
+process.on('uncaughtException', (error) => {
+    console.error('Необработанная ошибка:', error);
+});
 
 // Загрузка данных из Supabase при старте
 async function loadFromDatabase() {
@@ -32,10 +37,12 @@ async function loadFromDatabase() {
             .select('*')
             .order('created_at', { ascending: false });
         
-        if (menuError) throw menuError;
+        if (menuError && menuError.code !== 'PGRST116') {
+            console.log('Ошибка загрузки меню:', menuError);
+        }
         
-        // Загружаем кошелек (если есть таблица wallet)
-        let walletData = { kisses: 10, massage: 5, scratches: 2, dishes: 1 };
+        // Загружаем кошелек
+        let walletData = { kisses: 10, scratches: 5, massage: 2, licks: 1 };
         
         try {
             const { data: wallet, error: walletError } = await supabase
@@ -45,15 +52,14 @@ async function loadFromDatabase() {
                 .single();
             
             if (wallet && !walletError) {
-                // Миграция старых данных
-                if (wallet.licks !== undefined) {
-                    wallet.dishes = wallet.licks;
-                    delete wallet.licks;
+                // Миграция старых данных licks в dishes и обратно в licks
+                if (wallet.dishes !== undefined && wallet.licks === undefined) {
+                    wallet.licks = wallet.dishes;
+                    delete wallet.dishes;
                 }
                 walletData = wallet;
             }
         } catch (e) {
-            // Если таблицы нет, используем значения по умолчанию
             console.log('Таблица wallet не найдена, используем значения по умолчанию');
         }
         
@@ -64,17 +70,17 @@ async function loadFromDatabase() {
                 if (item.kissPrice && !item.prices) {
                     item.prices = {
                         kisses: item.kissPrice,
-                        massage: 0,
                         scratches: 0,
-                        dishes: 0
+                        massage: 0,
+                        licks: 0
                     };
                     delete item.kissPrice;
                 }
                 
-                // Миграция licks в dishes
-                if (item.prices && item.prices.licks !== undefined) {
-                    item.prices.dishes = item.prices.licks;
-                    delete item.prices.licks;
+                // Миграция dishes в licks для обратной совместимости
+                if (item.prices && item.prices.dishes !== undefined) {
+                    item.prices.licks = item.prices.dishes;
+                    delete item.prices.dishes;
                 }
             });
         }
@@ -107,10 +113,10 @@ app.post('/api/menu', async (req, res) => {
         // Сохраняем кошелек отдельно если есть изменения
         if (newData.wallet) {
             try {
-                // Миграция старых данных
-                if (newData.wallet.licks !== undefined) {
-                    newData.wallet.dishes = newData.wallet.licks;
-                    delete newData.wallet.licks;
+                // Миграция dishes в licks для совместимости
+                if (newData.wallet.dishes !== undefined && newData.wallet.licks === undefined) {
+                    newData.wallet.licks = newData.wallet.dishes;
+                    delete newData.wallet.dishes;
                 }
                 
                 // Пробуем обновить существующий кошелек
@@ -134,63 +140,73 @@ app.post('/api/menu', async (req, res) => {
             }
         }
         
-        // Определяем какие элементы добавить, обновить или удалить
-        const currentIds = menuCache.menu.map(item => item.id);
-        const newIds = newData.menu.map(item => item.id);
-        
-        // Удаляем отсутствующие
-        const toDelete = currentIds.filter(id => !newIds.includes(id));
-        if (toDelete.length > 0) {
-            const { error } = await supabase
-                .from('menu_items')
-                .delete()
-                .in('id', toDelete);
+        // Обрабатываем меню только если есть изменения
+        if (newData.menu) {
+            const currentIds = menuCache.menu.map(item => item.id);
+            const newIds = newData.menu.map(item => item.id);
             
-            if (error) throw error;
-        }
-        
-        // Добавляем или обновляем элементы
-        for (const item of newData.menu) {
-            const { id, ...itemData } = item;
-            
-            // Преобразуем старый формат в новый
-            if (itemData.kissPrice && !itemData.prices) {
-                itemData.prices = {
-                    kisses: itemData.kissPrice,
-                    massage: 0,
-                    scratches: 0,
-                    dishes: 0
-                };
-                delete itemData.kissPrice;
+            // Удаляем отсутствующие
+            const toDelete = currentIds.filter(id => !newIds.includes(id));
+            if (toDelete.length > 0) {
+                try {
+                    const { error } = await supabase
+                        .from('menu_items')
+                        .delete()
+                        .in('id', toDelete);
+                    
+                    if (error) console.log('Ошибка удаления:', error);
+                } catch (e) {
+                    console.log('Пропускаем удаление из БД');
+                }
             }
             
-            // Миграция licks в dishes
-            if (itemData.prices && itemData.prices.licks !== undefined) {
-                itemData.prices.dishes = itemData.prices.licks;
-                delete itemData.prices.licks;
-            }
-            
-            if (currentIds.includes(id)) {
-                // Обновляем существующий
-                const { error } = await supabase
-                    .from('menu_items')
-                    .update(itemData)
-                    .eq('id', id);
+            // Добавляем или обновляем элементы
+            for (const item of newData.menu) {
+                const { id, ...itemData } = item;
                 
-                if (error) throw error;
-            } else {
-                // Добавляем новый
-                const { error } = await supabase
-                    .from('menu_items')
-                    .insert([{ id, ...itemData }]);
+                // Преобразуем старый формат в новый
+                if (itemData.kissPrice && !itemData.prices) {
+                    itemData.prices = {
+                        kisses: itemData.kissPrice,
+                        scratches: 0,
+                        massage: 0,
+                        licks: 0
+                    };
+                    delete itemData.kissPrice;
+                }
                 
-                if (error) throw error;
+                // Миграция dishes в licks
+                if (itemData.prices && itemData.prices.dishes !== undefined) {
+                    itemData.prices.licks = itemData.prices.dishes;
+                    delete itemData.prices.dishes;
+                }
+                
+                try {
+                    if (currentIds.includes(id)) {
+                        // Обновляем существующий
+                        const { error } = await supabase
+                            .from('menu_items')
+                            .update(itemData)
+                            .eq('id', id);
+                        
+                        if (error) console.log('Ошибка обновления:', error);
+                    } else {
+                        // Добавляем новый
+                        const { error } = await supabase
+                            .from('menu_items')
+                            .insert([{ id, ...itemData }]);
+                        
+                        if (error) console.log('Ошибка добавления:', error);
+                    }
+                } catch (e) {
+                    console.log('Пропускаем операцию с БД для элемента:', id);
+                }
             }
         }
         
         // Обновляем кэш
         menuCache = {
-            menu: newData.menu,
+            menu: newData.menu || menuCache.menu,
             wallet: newData.wallet || menuCache.wallet,
             lastUpdated: new Date().toISOString()
         };
@@ -230,67 +246,107 @@ ${process.env.RENDER ? '☁️  Работает на Render.com' : '💻 Лок
 });
 
 // WebSocket сервер
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({ 
+    server,
+    perMessageDeflate: false,
+    clientTracking: true
+});
+
 const clients = new Set();
 
 function broadcast(message) {
+    if (clients.size === 0) return;
+    
     const messageStr = JSON.stringify(message);
+    const deadClients = new Set();
+    
     clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
-            client.send(messageStr);
+            try {
+                client.send(messageStr);
+            } catch (error) {
+                console.log('Ошибка отправки сообщения клиенту:', error.message);
+                deadClients.add(client);
+            }
+        } else {
+            deadClients.add(client);
         }
     });
+    
+    // Удаляем мертвые соединения
+    deadClients.forEach(client => clients.delete(client));
 }
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, req) => {
     clients.add(ws);
-    console.log('✅ Новое устройство подключено. Всего:', clients.size);
+    console.log(`✅ Новое устройство подключено. Всего: ${clients.size}`);
     
     // Отправляем текущие данные
-    ws.send(JSON.stringify({
-        type: 'init',
-        data: menuCache
-    }));
+    try {
+        ws.send(JSON.stringify({
+            type: 'init',
+            data: menuCache
+        }));
+    } catch (error) {
+        console.log('Ошибка отправки начальных данных:', error.message);
+    }
     
     // Пинг для поддержания соединения
     const pingInterval = setInterval(() => {
         if (ws.readyState === WebSocket.OPEN) {
-            ws.ping();
+            try {
+                ws.ping();
+            } catch (error) {
+                console.log('Ошибка ping:', error.message);
+                clearInterval(pingInterval);
+                clients.delete(ws);
+            }
+        } else {
+            clearInterval(pingInterval);
+            clients.delete(ws);
         }
     }, 30000);
     
     ws.on('close', () => {
         clients.delete(ws);
         clearInterval(pingInterval);
-        console.log('❌ Устройство отключено. Осталось:', clients.size);
+        console.log(`❌ Устройство отключено. Осталось: ${clients.size}`);
     });
     
     ws.on('error', (error) => {
-        console.error('WebSocket ошибка:', error);
+        console.error('WebSocket ошибка:', error.message);
         clients.delete(ws);
         clearInterval(pingInterval);
+    });
+    
+    ws.on('pong', () => {
+        // Клиент ответил на ping
     });
 });
 
 // Подписка на изменения в реальном времени от Supabase
 if (supabaseUrl !== 'https://your-project.supabase.co') {
-    const subscription = supabase
-        .channel('menu_changes')
-        .on('postgres_changes', 
-            { 
-                event: '*', 
-                schema: 'public', 
-                table: 'menu_items' 
-            }, 
-            async (payload) => {
-                console.log('📡 Изменение в БД:', payload.eventType);
-                // Перезагружаем данные при изменении
-                await loadFromDatabase();
-                broadcast({
-                    type: 'update',
-                    data: menuCache
-                });
-            }
-        )
-        .subscribe();
+    try {
+        const subscription = supabase
+            .channel('menu_changes')
+            .on('postgres_changes', 
+                { 
+                    event: '*', 
+                    schema: 'public', 
+                    table: 'menu_items' 
+                }, 
+                async (payload) => {
+                    console.log('📡 Изменение в БД:', payload.eventType);
+                    // Перезагружаем данные при изменении
+                    await loadFromDatabase();
+                    broadcast({
+                        type: 'update',
+                        data: menuCache
+                    });
+                }
+            )
+            .subscribe();
+    } catch (error) {
+        console.log('Не удалось подписаться на изменения Supabase:', error.message);
+    }
 }

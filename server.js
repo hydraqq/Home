@@ -6,7 +6,6 @@ app.post('/api/menu', async (req, res) => {
         // Сохраняем кошелек отдельно если есть изменения
         if (newData.wallet) {
             try {
-                // Пробуем обновить существующий кошелек
                 const { error: updateError } = await supabase
                     .from('wallet')
                     .update(newData.wallet)

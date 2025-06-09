@@ -724,39 +724,91 @@
             display: block;
         }
 
-        /* Управление валютой */
-        .currency-controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 5px;
+        /* Отображение кошелька в отдельной вкладке */
+        .wallet-display {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .currency-btn {
-            width: 25px;
-            height: 25px;
+        .wallet-display .wallet-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .wallet-display .currency-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .wallet-display .currency-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .wallet-display .currency-icon {
+            font-size: 2.5em;
+        }
+
+        .wallet-display .currency-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .wallet-display .currency-amount {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .wallet-display .currency-name {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .wallet-display .currency-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .wallet-display .currency-btn {
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             border: none;
             color: white;
-            font-size: 14px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
 
-        .currency-btn.minus {
-            background: #ff4757;
+        .wallet-display .currency-btn.minus {
+            background: rgba(255, 71, 87, 0.8);
         }
 
-        .currency-btn.plus {
-            background: #2ed573;
+        .wallet-display .currency-btn.plus {
+            background: rgba(46, 213, 115, 0.8);
         }
 
-        .currency-btn:hover {
+        .wallet-display .currency-btn:hover {
             transform: scale(1.1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
         }
 
         @media (max-width: 600px) {
@@ -884,7 +936,8 @@
         <div class="mode-tabs">
             <button class="mode-tab active" onclick="switchMode('view')">📖 Просмотр</button>
             <button class="mode-tab" onclick="switchMode('add')">➕ Добавить</button>
-            <button class="mode-tab" onclick="switchMode('earn')">💰 Заработать</button>
+            <button class="mode-tab" onclick="switchMode('wallet')">💰 Кошелек</button>
+            <button class="mode-tab" onclick="switchMode('earn')">🎁 Заработать</button>
         </div>
         
         <!-- Режим добавления -->
@@ -1334,6 +1387,7 @@
             
             // Показываем/скрываем секции
             document.getElementById('addSection').style.display = mode === 'add' ? 'block' : 'none';
+            document.getElementById('walletSection').style.display = mode === 'wallet' ? 'block' : 'none';
             document.getElementById('earnSection').style.display = mode === 'earn' ? 'block' : 'none';
             document.getElementById('menuList').style.display = mode === 'view' ? 'grid' : 'none';
             document.querySelector('.search-box').style.display = mode === 'view' ? 'block' : 'none';

@@ -505,7 +505,7 @@
             color: white;
         }
 
-        .price-tag.licks {
+        .price-tag.dishes {
             background: linear-gradient(45deg, #f093fb, #f5576c);
             color: white;
         }
@@ -732,9 +732,9 @@
                     <div class="currency-name">Массаж</div>
                 </div>
                 <div class="currency-item">
-                    <div class="currency-icon">👅</div>
-                    <div class="currency-amount" id="licksBalance">0</div>
-                    <div class="currency-name">Отлиз</div>
+                    <div class="currency-icon">🧽</div>
+                    <div class="currency-amount" id="dishesBalance">0</div>
+                    <div class="currency-name">Мытьё посуды</div>
                 </div>
             </div>
         </div>
@@ -796,8 +796,8 @@
                             <input type="number" id="massagePrice" min="0" value="0" placeholder="Массаж">
                         </div>
                         <div class="price-input-group">
-                            <span class="currency-label">👅</span>
-                            <input type="number" id="lickPrice" min="0" value="0" placeholder="Отлиз">
+                            <span class="currency-label">🧽</span>
+                            <input type="number" id="dishesPrice" min="0" value="0" placeholder="Мытьё посуды">
                         </div>
                     </div>
                 </div>
@@ -820,9 +820,48 @@
                         <span style="background: #ff6b6b; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="kissesDisplay">0</span>
                     </h3>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <button onclick="adjustCurrency('licks', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
-                        <button onclick="adjustCurrency('licks', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
-                        <button onclick="adjustCurrency('licks', 1)" style="background: #667eea; color: white; width: 100%;">+1</button>
+                        <button onclick="adjustCurrency('kisses', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
+                        <button onclick="adjustCurrency('kisses', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
+                        <button onclick="adjustCurrency('kisses', 5)" style="background: #667eea; color: white; width: 100%;">+5</button>
+                    </div>
+                </div>
+
+                <!-- Почухать -->
+                <div style="background: rgba(76, 205, 196, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(76, 205, 196, 0.3);">
+                    <h3 style="color: #4ecdc4; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                        🤗 Почухать
+                        <span style="background: #4ecdc4; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="scratchesDisplay">0</span>
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <button onclick="adjustCurrency('scratches', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
+                        <button onclick="adjustCurrency('scratches', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
+                        <button onclick="adjustCurrency('scratches', 3)" style="background: #667eea; color: white; width: 100%;">+3</button>
+                    </div>
+                </div>
+
+                <!-- Массаж -->
+                <div style="background: rgba(168, 224, 99, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(168, 224, 99, 0.3);">
+                    <h3 style="color: #a8e063; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                        💆 Массаж
+                        <span style="background: #a8e063; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="massageDisplay">0</span>
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <button onclick="adjustCurrency('massage', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
+                        <button onclick="adjustCurrency('massage', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
+                        <button onclick="adjustCurrency('massage', 2)" style="background: #667eea; color: white; width: 100%;">+2</button>
+                    </div>
+                </div>
+
+                <!-- Мытьё посуды -->
+                <div style="background: rgba(240, 147, 251, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(240, 147, 251, 0.3);">
+                    <h3 style="color: #f093fb; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                        🧽 Мытьё посуды
+                        <span style="background: #f093fb; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="dishesDisplay">0</span>
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <button onclick="adjustCurrency('dishes', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
+                        <button onclick="adjustCurrency('dishes', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
+                        <button onclick="adjustCurrency('dishes', 1)" style="background: #667eea; color: white; width: 100%;">+1</button>
                     </div>
                 </div>
                 
@@ -848,7 +887,7 @@
         // Класс для управления приложением
         class MenuApp {
             constructor() {
-                this.data = { menu: [], wallet: { kisses: 10, scratches: 5, massage: 2, licks: 1 } };
+                this.data = { menu: [], wallet: { kisses: 10, scratches: 5, massage: 2, dishes: 1 } };
                 this.cart = [];
                 this.ws = null;
                 this.serverUrl = window.location.origin;
@@ -923,7 +962,7 @@
                         this.data = await response.json();
                         // Инициализируем кошелек если его нет
                         if (!this.data.wallet) {
-                            this.data.wallet = { kisses: 10, scratches: 5, massage: 2, licks: 1 };
+                            this.data.wallet = { kisses: 10, scratches: 5, massage: 2, dishes: 1 };
                         }
                         renderMenu();
                     }
@@ -981,18 +1020,18 @@
                 document.getElementById('kissesBalance').textContent = this.data.wallet?.kisses || 0;
                 document.getElementById('scratchesBalance').textContent = this.data.wallet?.scratches || 0;
                 document.getElementById('massageBalance').textContent = this.data.wallet?.massage || 0;
-                document.getElementById('licksBalance').textContent = this.data.wallet?.licks || 0;
+                document.getElementById('dishesBalance').textContent = this.data.wallet?.dishes || 0;
                 
                 // Обновляем также дисплеи в секции управления валютой
                 const kissesDisplay = document.getElementById('kissesDisplay');
                 const scratchesDisplay = document.getElementById('scratchesDisplay');
                 const massageDisplay = document.getElementById('massageDisplay');
-                const licksDisplay = document.getElementById('licksDisplay');
+                const dishesDisplay = document.getElementById('dishesDisplay');
                 
                 if (kissesDisplay) kissesDisplay.textContent = this.data.wallet?.kisses || 0;
                 if (scratchesDisplay) scratchesDisplay.textContent = this.data.wallet?.scratches || 0;
                 if (massageDisplay) massageDisplay.textContent = this.data.wallet?.massage || 0;
-                if (licksDisplay) licksDisplay.textContent = this.data.wallet?.licks || 0;
+                if (dishesDisplay) dishesDisplay.textContent = this.data.wallet?.dishes || 0;
             }
 
             adjustCurrency(type, amount) {
@@ -1005,16 +1044,6 @@
                 if (amount > 0) {
                     this.showCurrencyAnimation(type, amount);
                 }
-            }
-
-            earnCurrency(type, amount) {
-                if (!this.data.wallet) this.data.wallet = {};
-                this.data.wallet[type] = (this.data.wallet[type] || 0) + amount;
-                this.updateWalletDisplay();
-                this.save();
-                
-                // Анимация получения валюты
-                this.showCurrencyAnimation(type, amount);
             }
 
             spendCurrency(costs) {
@@ -1040,7 +1069,7 @@
                     kisses: '💋',
                     scratches: '🤗',
                     massage: '💆',
-                    licks: '👅'
+                    dishes: '🧽'
                 };
                 
                 const anim = document.createElement('div');
@@ -1093,13 +1122,13 @@
             }
 
             getTotalCost() {
-                const totals = { kisses: 0, scratches: 0, massage: 0, licks: 0 };
+                const totals = { kisses: 0, scratches: 0, massage: 0, dishes: 0 };
                 
                 this.cart.forEach(item => {
                     if (item.prices.kisses) totals.kisses += item.prices.kisses;
                     if (item.prices.scratches) totals.scratches += item.prices.scratches;
                     if (item.prices.massage) totals.massage += item.prices.massage;
-                    if (item.prices.licks) totals.licks += item.prices.licks;
+                    if (item.prices.dishes) totals.dishes += item.prices.dishes;
                 });
                 
                 return totals;
@@ -1209,7 +1238,7 @@
                 kisses: parseInt(document.getElementById('kissPrice').value) || 0,
                 scratches: parseInt(document.getElementById('scratchPrice').value) || 0,
                 massage: parseInt(document.getElementById('massagePrice').value) || 0,
-                licks: parseInt(document.getElementById('lickPrice').value) || 0
+                dishes: parseInt(document.getElementById('dishesPrice').value) || 0
             };
             
             const item = {
@@ -1281,7 +1310,7 @@
                                     ${prices.kisses ? `<span class="price-tag kisses">💋 ${prices.kisses}</span>` : ''}
                                     ${prices.scratches ? `<span class="price-tag scratches">🤗 ${prices.scratches}</span>` : ''}
                                     ${prices.massage ? `<span class="price-tag massage">💆 ${prices.massage}</span>` : ''}
-                                    ${prices.licks ? `<span class="price-tag licks">👅 ${prices.licks}</span>` : ''}
+                                    ${prices.dishes ? `<span class="price-tag dishes">🧽 ${prices.dishes}</span>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -1312,7 +1341,7 @@
             document.getElementById('kissPrice').value = prices.kisses || 0;
             document.getElementById('scratchPrice').value = prices.scratches || 0;
             document.getElementById('massagePrice').value = prices.massage || 0;
-            document.getElementById('lickPrice').value = prices.licks || 0;
+            document.getElementById('dishesPrice').value = prices.dishes || 0;
             
             // Изображение
             if (item.image) {
@@ -1366,7 +1395,7 @@
                             ${item.prices.kisses ? `<span class="price-badge">💋 ${item.prices.kisses}</span>` : ''}
                             ${item.prices.scratches ? `<span class="price-badge">🤗 ${item.prices.scratches}</span>` : ''}
                             ${item.prices.massage ? `<span class="price-badge">💆 ${item.prices.massage}</span>` : ''}
-                            ${item.prices.licks ? `<span class="price-badge">👅 ${item.prices.licks}</span>` : ''}
+                            ${item.prices.dishes ? `<span class="price-badge">🧽 ${item.prices.dishes}</span>` : ''}
                         </div>
                     </div>
                     <button class="action-btn delete-btn" onclick="removeFromCart(${index})">×</button>
@@ -1381,7 +1410,7 @@
                 ${totals.kisses ? `<span class="price-badge">💋 ${totals.kisses}</span> ` : ''}
                 ${totals.scratches ? `<span class="price-badge">🤗 ${totals.scratches}</span> ` : ''}
                 ${totals.massage ? `<span class="price-badge">💆 ${totals.massage}</span> ` : ''}
-                ${totals.licks ? `<span class="price-badge">👅 ${totals.licks}</span> ` : ''}
+                ${totals.dishes ? `<span class="price-badge">🧽 ${totals.dishes}</span> ` : ''}
             `;
             
             cartTotal.style.display = 'block';
@@ -1409,7 +1438,7 @@
             for (const [type, amount] of Object.entries(totals)) {
                 if (amount > 0 && (app.data.wallet[type] || 0) < amount) {
                     canAfford = false;
-                    const icons = { kisses: '💋', scratches: '🤗', massage: '💆', licks: '👅' };
+                    const icons = { kisses: '💋', scratches: '🤗', massage: '💆', dishes: '🧽' };
                     missing.push(`${icons[type]} ${amount - (app.data.wallet[type] || 0)}`);
                 }
             }
@@ -1466,43 +1495,4 @@
         document.head.appendChild(style);
     </script>
 </body>
-</html>="adjustCurrency('kisses', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
-                        <button onclick="adjustCurrency('kisses', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
-                        <button onclick="adjustCurrency('kisses', 5)" style="background: #667eea; color: white; width: 100%;">+5</button>
-                    </div>
-                </div>
-
-                <!-- Почухать -->
-                <div style="background: rgba(76, 205, 196, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(76, 205, 196, 0.3);">
-                    <h3 style="color: #4ecdc4; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                        🤗 Почухать
-                        <span style="background: #4ecdc4; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="scratchesDisplay">0</span>
-                    </h3>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <button onclick="adjustCurrency('scratches', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
-                        <button onclick="adjustCurrency('scratches', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
-                        <button onclick="adjustCurrency('scratches', 3)" style="background: #667eea; color: white; width: 100%;">+3</button>
-                    </div>
-                </div>
-
-                <!-- Массаж -->
-                <div style="background: rgba(168, 224, 99, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(168, 224, 99, 0.3);">
-                    <h3 style="color: #a8e063; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                        💆 Массаж
-                        <span style="background: #a8e063; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="massageDisplay">0</span>
-                    </h3>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <button onclick="adjustCurrency('massage', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
-                        <button onclick="adjustCurrency('massage', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
-                        <button onclick="adjustCurrency('massage', 2)" style="background: #667eea; color: white; width: 100%;">+2</button>
-                    </div>
-                </div>
-
-                <!-- Отлиз -->
-                <div style="background: rgba(240, 147, 251, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(240, 147, 251, 0.3);">
-                    <h3 style="color: #f093fb; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                        👅 Отлиз
-                        <span style="background: #f093fb; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="licksDisplay">0</span>
-                    </h3>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <button onclick
+</html>

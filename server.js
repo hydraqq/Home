@@ -15,7 +15,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Кэш данных для быстрого доступа
 let menuCache = { 
     menu: [], 
-    wallet: { kisses: 10, scratches: 5, massage: 2, licks: 1 },
+    wallet: { kisses: 10, scratches: 5, massage: 2, dishes: 1 },
     lastUpdated: new Date().toISOString() 
 };
 
@@ -42,7 +42,7 @@ async function loadFromDatabase() {
         }
         
         // Загружаем кошелек
-        let walletData = { kisses: 10, scratches: 5, massage: 2, licks: 1 };
+        let walletData = { kisses: 10, scratches: 5, massage: 2, dishes: 1 };
         
         try {
             const { data: wallet, error: walletError } = await supabase
@@ -52,10 +52,10 @@ async function loadFromDatabase() {
                 .single();
             
             if (wallet && !walletError) {
-                // Миграция старых данных licks в dishes и обратно в licks
-                if (wallet.dishes !== undefined && wallet.licks === undefined) {
-                    wallet.licks = wallet.dishes;
-                    delete wallet.dishes;
+                // Миграция licks в dishes для совместимости
+                if (wallet.licks !== undefined && wallet.dishes === undefined) {
+                    wallet.dishes = wallet.licks;
+                    delete wallet.licks;
                 }
                 walletData = wallet;
             }
@@ -72,15 +72,15 @@ async function loadFromDatabase() {
                         kisses: item.kissPrice,
                         scratches: 0,
                         massage: 0,
-                        licks: 0
+                        dishes: 0
                     };
                     delete item.kissPrice;
                 }
                 
-                // Миграция dishes в licks для обратной совместимости
-                if (item.prices && item.prices.dishes !== undefined) {
-                    item.prices.licks = item.prices.dishes;
-                    delete item.prices.dishes;
+                // Миграция licks в dishes для совместимости
+                if (item.prices && item.prices.licks !== undefined) {
+                    item.prices.dishes = item.prices.licks;
+                    delete item.prices.licks;
                 }
             });
         }
@@ -113,10 +113,10 @@ app.post('/api/menu', async (req, res) => {
         // Сохраняем кошелек отдельно если есть изменения
         if (newData.wallet) {
             try {
-                // Миграция dishes в licks для совместимости
-                if (newData.wallet.dishes !== undefined && newData.wallet.licks === undefined) {
-                    newData.wallet.licks = newData.wallet.dishes;
-                    delete newData.wallet.dishes;
+                // Миграция licks в dishes для совместимости
+                if (newData.wallet.licks !== undefined && newData.wallet.dishes === undefined) {
+                    newData.wallet.dishes = newData.wallet.licks;
+                    delete newData.wallet.licks;
                 }
                 
                 // Пробуем обновить существующий кошелек
@@ -170,15 +170,15 @@ app.post('/api/menu', async (req, res) => {
                         kisses: itemData.kissPrice,
                         scratches: 0,
                         massage: 0,
-                        licks: 0
+                        dishes: 0
                     };
                     delete itemData.kissPrice;
                 }
                 
-                // Миграция dishes в licks
-                if (itemData.prices && itemData.prices.dishes !== undefined) {
-                    itemData.prices.licks = itemData.prices.dishes;
-                    delete itemData.prices.dishes;
+                // Миграция licks в dishes
+                if (itemData.prices && itemData.prices.licks !== undefined) {
+                    itemData.prices.dishes = itemData.prices.licks;
+                    delete itemData.prices.licks;
                 }
                 
                 try {

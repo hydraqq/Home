@@ -783,11 +783,7 @@
         <div class="cart-content">
             <div class="cart-header">
                 <h3>Корзина</h3>
-                <button class="action-btn" onclick="closeCart()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 6L6 18M6 6l12 12"/>
-                    </svg>
-                </button>
+                <button class="action-btn" onclick="closeCart()">×</button>
             </div>
             <div class="cart-body" id="cartBody">
                 <p style="text-align: center; color: var(--text-tertiary);">Корзина пуста</p>
@@ -1368,17 +1364,8 @@
                 return `
                     <div class="menu-item">
                         <div class="menu-item-actions">
-                            <button class="action-btn edit-btn" onclick="editItem('${item.id}')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                </svg>
-                            </button>
-                            <button class="action-btn delete-btn" onclick="deleteItem('${item.id}')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M18 6L6 18M6 6l12 12"/>
-                                </svg>
-                            </button>
+                            <button class="action-btn edit-btn" onclick="editItem('${item.id}')">✏️</button>
+                            <button class="action-btn delete-btn" onclick="deleteItem('${item.id}')">×</button>
                         </div>
                         <div class="menu-item-header">
                             ${item.image ? `<img src="${item.image}" alt="${item.name}" class="menu-item-image">` : ''}
@@ -1471,11 +1458,7 @@
                             ${item.prices.dishes ? `<span class="price-badge">🧽 ${item.prices.dishes}</span>` : ''}
                         </div>
                     </div>
-                    <button class="action-btn delete-btn" onclick="removeFromCart(${index})">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 6L6 18M6 6l12 12"/>
-                        </svg>
-                    </button>
+                    <button class="action-btn delete-btn" onclick="removeFromCart(${index})">×</button>
                 </div>
             `).join('');
             

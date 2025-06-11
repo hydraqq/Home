@@ -11,160 +11,186 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-tertiary: #666666;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --border: #262626;
+            --shadow: rgba(0, 0, 0, 0.5);
         }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Connection Status */
         .connection-status {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #4caf50;
-            color: white;
+            top: 24px;
+            right: 24px;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
             padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
+            border-radius: 100px;
+            font-size: 13px;
             display: flex;
             align-items: center;
             gap: 8px;
             z-index: 1000;
-            cursor: pointer;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
         .connection-status.offline {
-            background: #ff4757;
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--error);
+            color: var(--error);
         }
 
         .connection-status.connecting {
-            background: #ffa502;
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning);
+            color: var(--warning);
         }
 
         .connection-status .dot {
-            width: 8px;
-            height: 8px;
-            background: white;
+            width: 6px;
+            height: 6px;
+            background: currentColor;
             border-radius: 50%;
-            animation: pulse 2s infinite;
+            animation: pulse 2s ease-in-out infinite;
         }
 
         @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
+        /* Container */
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 24px;
         }
 
         h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 48px;
+            letter-spacing: -0.02em;
         }
 
-        /* Кошелек */
+        /* Wallet */
         .wallet {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 32px;
         }
 
         .wallet h3 {
-            margin-bottom: 15px;
-            font-size: 1.3em;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .wallet-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
         }
 
         .currency-item {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 10px;
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
         }
 
         .currency-item:hover {
-            background: rgba(255, 255, 255, 0.3);
+            border-color: var(--accent);
             transform: translateY(-2px);
         }
 
         .currency-icon {
-            font-size: 2em;
-            margin-bottom: 5px;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            filter: grayscale(0.3);
         }
 
         .currency-amount {
-            font-size: 1.2em;
-            font-weight: bold;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
         .currency-name {
-            font-size: 0.9em;
-            opacity: 0.9;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
         }
 
-        /* Корзина */
+        /* Cart Button */
         .cart-button {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(45deg, #ff6b6b, #ff8787);
+            bottom: 32px;
+            right: 32px;
+            background: var(--accent);
             color: white;
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s ease;
             z-index: 999;
+            border: none;
         }
 
         .cart-button:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
+            background: var(--accent-hover);
         }
 
         .cart-count {
             position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ff4757;
+            top: -4px;
+            right: -4px;
+            background: var(--error);
             color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 0 6px;
         }
 
-        /* Модальное окно корзины */
+        /* Modal */
         .cart-modal {
             position: fixed;
             top: 0;
@@ -172,10 +198,12 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 2000;
+            padding: 24px;
         }
 
         .cart-modal.active {
@@ -183,27 +211,33 @@
         }
 
         .cart-content {
-            background: white;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
+            background: var(--bg-secondary);
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
             border-radius: 20px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            border: 1px solid var(--border);
         }
 
         .cart-header {
-            background: linear-gradient(45deg, #ff6b6b, #ff8787);
-            color: white;
-            padding: 20px;
+            background: var(--bg-tertiary);
+            padding: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cart-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
         }
 
         .cart-body {
-            padding: 20px;
+            padding: 24px;
             overflow-y: auto;
             flex: 1;
         }
@@ -211,140 +245,146 @@
         .cart-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
+            align-items: flex-start;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
         }
 
-        .cart-item-info {
-            flex: 1;
+        .cart-item:last-child {
+            border-bottom: none;
         }
 
         .cart-item-name {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 500;
+            margin-bottom: 8px;
         }
 
         .cart-item-price {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .price-badge {
             display: inline-flex;
             align-items: center;
-            gap: 3px;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.9em;
-            background: #f0f0f0;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.813rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
         }
 
         .cart-total {
-            padding: 20px;
-            border-top: 2px solid #eee;
-            background: #f8f9fa;
+            padding: 24px;
+            border-top: 1px solid var(--border);
+            background: var(--bg-tertiary);
         }
 
         .cart-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 16px;
         }
 
-        .cart-actions button {
-            flex: 1;
-        }
-
-        /* Табы для переключения режимов */
+        /* Tabs */
         .mode-tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
+            gap: 4px;
+            margin-bottom: 32px;
+            background: var(--bg-secondary);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
         }
 
         .mode-tab {
             flex: 1;
-            padding: 12px;
+            padding: 12px 24px;
             background: transparent;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
             font-weight: 500;
-            color: #667eea;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .mode-tab:hover {
+            color: var(--text-primary);
         }
 
         .mode-tab.active {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: var(--accent);
             color: white;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-            transform: translateY(-2px);
         }
 
+        /* Forms */
         .add-section {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: var(--bg-secondary);
+            padding: 32px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 24px;
         }
 
         label {
             display: block;
-            margin-bottom: 5px;
-            color: #555;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
             font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         input, textarea {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s;
+            font-size: 1rem;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
         }
 
         input:focus, textarea:focus {
             outline: none;
-            border-color: #667eea;
-            transform: translateY(-2px);
+            border-color: var(--accent);
+            background: var(--bg-primary);
         }
 
         textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
+            font-family: inherit;
         }
 
         .image-upload {
             position: relative;
             width: 100%;
-            height: 150px;
-            border: 2px dashed #667eea;
-            border-radius: 8px;
+            height: 200px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s;
-            background: #f8f9fa;
+            transition: all 0.2s ease;
+            background: var(--bg-tertiary);
+            overflow: hidden;
         }
 
         .image-upload:hover {
-            border-color: #764ba2;
-            background: #f0f0f0;
+            border-color: var(--accent);
+            background: var(--bg-primary);
         }
 
         .image-upload input[type="file"] {
@@ -359,94 +399,118 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 6px;
         }
 
-        /* Цены в разных валютах */
+        #uploadText {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        #uploadText > div:first-child {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+
+        /* Price Inputs */
         .price-inputs {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 16px;
         }
 
         .price-input-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .price-input-group .currency-label {
-            font-size: 1.5em;
-            width: 40px;
+            font-size: 1.25rem;
+            width: 32px;
             text-align: center;
+            filter: grayscale(0.3);
         }
 
+        /* Buttons */
         button {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: var(--accent);
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 12px 24px;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 0.875rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            font-weight: 600;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            background: var(--accent-hover);
         }
 
         button:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
 
+        .secondary-button {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .secondary-button:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent);
+        }
+
+        .danger-button {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        .danger-button:hover {
+            background: var(--error);
+            color: white;
+        }
+
+        /* Menu List */
         .menu-list {
             display: grid;
-            gap: 20px;
+            gap: 24px;
         }
 
         .menu-item {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s;
+            background: var(--bg-secondary);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
             position: relative;
-            overflow: hidden;
-        }
-
-        .menu-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(45deg, #667eea, #764ba2);
         }
 
         .menu-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+            transform: translateY(-2px);
         }
 
         .menu-item-header {
             display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 20px;
+            margin-bottom: 16px;
         }
 
         .menu-item-image {
             width: 120px;
             height: 120px;
-            border-radius: 10px;
+            border-radius: 12px;
             object-fit: cover;
             flex-shrink: 0;
+            background: var(--bg-tertiary);
         }
 
         .menu-item-content {
@@ -454,152 +518,125 @@
         }
 
         .menu-item h3 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.4em;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
         }
 
         .menu-item p {
-            color: #666;
+            color: var(--text-secondary);
             line-height: 1.6;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
         }
 
         .menu-item .ingredients {
-            color: #888;
-            font-size: 0.9em;
-            font-style: italic;
+            color: var(--text-tertiary);
+            font-size: 0.813rem;
         }
 
         .menu-item-prices {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .price-tag {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9em;
-            background: #f0f0f0;
-            transition: all 0.3s;
-        }
-
-        .price-tag.kisses {
-            background: linear-gradient(45deg, #ff6b6b, #ff8787);
-            color: white;
-        }
-
-        .price-tag.scratches {
-            background: linear-gradient(45deg, #4ecdc4, #44a3aa);
-            color: white;
-        }
-
-        .price-tag.massage {
-            background: linear-gradient(45deg, #a8e063, #56ab2f);
-            color: white;
-        }
-
-        .price-tag.dishes {
-            background: linear-gradient(45deg, #f093fb, #f5576c);
-            color: white;
+            gap: 4px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-weight: 500;
+            font-size: 0.813rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
         }
 
         .menu-item-actions {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 16px;
+            right: 16px;
             display: flex;
-            gap: 5px;
+            gap: 8px;
         }
 
         .action-btn {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
-            border: none;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border);
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
         }
 
-        .edit-btn {
-            background: #3498db;
-            color: white;
-        }
-
-        .edit-btn:hover {
-            background: #2980b9;
-            transform: rotate(15deg);
-        }
-
-        .delete-btn {
-            background: #ff4757;
-            color: white;
+        .action-btn:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border-color: var(--accent);
         }
 
         .delete-btn:hover {
-            background: #ff3838;
-            transform: rotate(90deg);
+            color: var(--error);
+            border-color: var(--error);
         }
 
         .add-to-cart-btn {
-            margin-top: 15px;
-            background: linear-gradient(45deg, #4caf50, #66bb6a);
-            padding: 10px 20px;
-            font-size: 14px;
+            margin-top: 16px;
             width: auto;
+            padding: 10px 20px;
+            font-size: 0.813rem;
         }
 
-        .add-to-cart-btn:hover {
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-        }
-
+        /* Search */
         .search-box {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            position: relative;
         }
 
         .search-box input {
-            padding-left: 40px;
+            padding-left: 48px;
+            background: var(--bg-secondary);
         }
 
         .search-icon {
             position: absolute;
-            left: 12px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: #999;
+            color: var(--text-tertiary);
         }
 
+        /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: #999;
+            padding: 80px 20px;
+            color: var(--text-tertiary);
         }
 
         .empty-state svg {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 20px;
-            opacity: 0.3;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 24px;
+            opacity: 0.2;
         }
 
-        /* Анимация получения валюты */
+        /* Currency Animation */
         .currency-animation {
             position: fixed;
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 20px;
+            font-weight: 600;
             z-index: 9999;
             animation: floatUp 2s ease-out forwards;
             pointer-events: none;
+            color: var(--success);
         }
 
         @keyframes floatUp {
@@ -608,27 +645,28 @@
                 opacity: 0;
             }
             50% {
-                transform: translateY(-30px) scale(1.2);
+                transform: translateY(-40px) scale(1.1);
                 opacity: 1;
             }
             100% {
-                transform: translateY(-60px) scale(1);
+                transform: translateY(-80px) scale(1);
                 opacity: 0;
             }
         }
 
-        /* Уведомления */
+        /* Notification */
         .notification {
             position: fixed;
             bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 30px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: 16px 32px;
+            border-radius: 100px;
             display: none;
             z-index: 1500;
+            border: 1px solid var(--border);
             animation: slideInUp 0.3s ease;
         }
 
@@ -647,13 +685,53 @@
             display: block;
         }
 
-        @media (max-width: 600px) {
+        /* Earn Section */
+        .currency-control {
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .currency-control h3 {
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.125rem;
+        }
+
+        .currency-control h3 span {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .currency-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .currency-buttons button {
+            padding: 10px 16px;
+            font-size: 0.813rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                padding: 16px;
             }
             
             h1 {
-                font-size: 2em;
+                font-size: 1.5rem;
+                margin-bottom: 32px;
             }
 
             .menu-item-header {
@@ -672,36 +750,54 @@
             .price-inputs {
                 grid-template-columns: 1fr;
             }
+
+            .mode-tabs {
+                gap: 2px;
+                padding: 2px;
+            }
+
+            .mode-tab {
+                padding: 10px 16px;
+                font-size: 0.813rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="connection-status" id="connectionStatus" title="Статус подключения">
+    <div class="connection-status" id="connectionStatus">
         <span class="dot"></span>
         <span id="statusText">Подключение...</span>
     </div>
 
     <div class="cart-button" onclick="openCart()">
-        🛒
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22Z"/>
+            <path d="M20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22Z"/>
+            <path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6"/>
+        </svg>
         <span class="cart-count" id="cartCount" style="display: none;">0</span>
     </div>
 
-    <!-- Модальное окно корзины -->
+    <!-- Cart Modal -->
     <div class="cart-modal" id="cartModal">
         <div class="cart-content">
             <div class="cart-header">
-                <h3>🛒 Корзина</h3>
-                <button class="action-btn" style="background: transparent; font-size: 24px;" onclick="closeCart()">×</button>
+                <h3>Корзина</h3>
+                <button class="action-btn" onclick="closeCart()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
             </div>
             <div class="cart-body" id="cartBody">
-                <p style="text-align: center; color: #999;">Корзина пуста</p>
+                <p style="text-align: center; color: var(--text-tertiary);">Корзина пуста</p>
             </div>
             <div class="cart-total" id="cartTotal" style="display: none;">
-                <h4>Итого:</h4>
-                <div id="totalPrices" style="margin: 10px 0;"></div>
+                <h4 style="margin-bottom: 12px; font-weight: 500;">Итого:</h4>
+                <div id="totalPrices" style="margin: 12px 0;"></div>
                 <div class="cart-actions">
-                    <button onclick="clearCart()" style="background: #ff4757;">Очистить</button>
-                    <button onclick="checkout()">Оформить заказ</button>
+                    <button onclick="clearCart()" class="danger-button" style="flex: 1;">Очистить</button>
+                    <button onclick="checkout()" style="flex: 1;">Оформить</button>
                 </div>
             </div>
         </div>
@@ -710,11 +806,11 @@
     <div class="notification" id="notification"></div>
 
     <div class="container">
-        <h1>🍳 Мое Меню</h1>
+        <h1>Мое Меню</h1>
         
-        <!-- Кошелек -->
+        <!-- Wallet -->
         <div class="wallet">
-            <h3>💰 Мой кошелек</h3>
+            <h3>Кошелек</h3>
             <div class="wallet-grid">
                 <div class="currency-item">
                     <div class="currency-icon">💋</div>
@@ -739,16 +835,16 @@
             </div>
         </div>
 
-        <!-- Табы для переключения режимов -->
+        <!-- Tabs -->
         <div class="mode-tabs">
-            <button class="mode-tab active" onclick="switchMode('view')">📖 Просмотр</button>
-            <button class="mode-tab" onclick="switchMode('add')">➕ Добавить</button>
-            <button class="mode-tab" onclick="switchMode('earn')">💰 Управление</button>
+            <button class="mode-tab active" onclick="switchMode('view')">Просмотр</button>
+            <button class="mode-tab" onclick="switchMode('add')">Добавить</button>
+            <button class="mode-tab" onclick="switchMode('earn')">Управление</button>
         </div>
         
-        <!-- Режим добавления -->
+        <!-- Add Section -->
         <div class="add-section" id="addSection" style="display: none;">
-            <h2 style="margin-bottom: 20px; color: #333;" id="formTitle">Добавить новое блюдо</h2>
+            <h2 style="margin-bottom: 24px; font-weight: 600;" id="formTitle">Добавить новое блюдо</h2>
             <form id="menuForm">
                 <input type="hidden" id="editId" value="">
                 
@@ -757,9 +853,9 @@
                     <div class="image-upload" id="imageUploadArea">
                         <input type="file" id="dishImage" accept="image/*">
                         <div id="uploadText">
-                            <div style="font-size: 40px; margin-bottom: 10px;">📷</div>
+                            <div>📷</div>
                             <div>Нажмите или перетащите фото</div>
-                            <div style="font-size: 12px; color: #999; margin-top: 5px;">Максимум 2 МБ</div>
+                            <div style="font-size: 12px; margin-top: 4px;">Максимум 2 МБ</div>
                         </div>
                         <img id="imagePreview" class="image-preview" style="display: none;">
                     </div>
@@ -781,90 +877,81 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>Цена в разных валютах:</label>
+                    <label>Цена в разных валютах</label>
                     <div class="price-inputs">
                         <div class="price-input-group">
                             <span class="currency-label">💋</span>
-                            <input type="number" id="kissPrice" min="0" value="3" placeholder="Поцелуи">
+                            <input type="number" id="kissPrice" min="0" value="3" placeholder="0">
                         </div>
                         <div class="price-input-group">
                             <span class="currency-label">🤗</span>
-                            <input type="number" id="scratchPrice" min="0" value="0" placeholder="Почухать">
+                            <input type="number" id="scratchPrice" min="0" value="0" placeholder="0">
                         </div>
                         <div class="price-input-group">
                             <span class="currency-label">💆</span>
-                            <input type="number" id="massagePrice" min="0" value="0" placeholder="Массаж">
+                            <input type="number" id="massagePrice" min="0" value="0" placeholder="0">
                         </div>
                         <div class="price-input-group">
                             <span class="currency-label">🧽</span>
-                            <input type="number" id="dishesPrice" min="0" value="0" placeholder="Мытьё посуды">
+                            <input type="number" id="dishesPrice" min="0" value="0" placeholder="0">
                         </div>
                     </div>
                 </div>
                 
-                <button type="submit" id="submitBtn">Добавить блюдо</button>
+                <button type="submit" id="submitBtn" style="width: 100%;">Добавить блюдо</button>
             </form>
         </div>
 
-        <!-- Режим управления валютой -->
+        <!-- Earn Section -->
         <div class="add-section" id="earnSection" style="display: none;">
-            <h2 style="margin-bottom: 20px; color: #333;">💰 Управление валютой</h2>
-            <p style="margin-bottom: 20px; color: #666;">Используйте кнопки для изменения количества валюты:</p>
+            <h2 style="margin-bottom: 24px; font-weight: 600;">Управление валютой</h2>
             
-            <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
-                
-                <!-- Поцелуи -->
-                <div style="background: rgba(255, 107, 107, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(255, 107, 107, 0.3);">
-                    <h3 style="color: #ff6b6b; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                        💋 Поцелуи
-                        <span style="background: #ff6b6b; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="kissesDisplay">0</span>
-                    </h3>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <button onclick="adjustCurrency('kisses', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
-                        <button onclick="adjustCurrency('kisses', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
-                        <button onclick="adjustCurrency('kisses', 5)" style="background: #667eea; color: white; width: 100%;">+5</button>
-                    </div>
+            <div class="currency-control">
+                <h3>
+                    💋 Поцелуи
+                    <span id="kissesDisplay">0</span>
+                </h3>
+                <div class="currency-buttons">
+                    <button onclick="adjustCurrency('kisses', -1)" class="danger-button">-1</button>
+                    <button onclick="adjustCurrency('kisses', 1)">+1</button>
+                    <button onclick="adjustCurrency('kisses', 5)" class="secondary-button">+5</button>
                 </div>
+            </div>
 
-                <!-- Почухать -->
-                <div style="background: rgba(76, 205, 196, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(76, 205, 196, 0.3);">
-                    <h3 style="color: #4ecdc4; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                        🤗 Почухать
-                        <span style="background: #4ecdc4; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="scratchesDisplay">0</span>
-                    </h3>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <button onclick="adjustCurrency('scratches', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
-                        <button onclick="adjustCurrency('scratches', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
-                        <button onclick="adjustCurrency('scratches', 3)" style="background: #667eea; color: white; width: 100%;">+3</button>
-                    </div>
+            <div class="currency-control">
+                <h3>
+                    🤗 Почухать
+                    <span id="scratchesDisplay">0</span>
+                </h3>
+                <div class="currency-buttons">
+                    <button onclick="adjustCurrency('scratches', -1)" class="danger-button">-1</button>
+                    <button onclick="adjustCurrency('scratches', 1)">+1</button>
+                    <button onclick="adjustCurrency('scratches', 3)" class="secondary-button">+3</button>
                 </div>
+            </div>
 
-                <!-- Массаж -->
-                <div style="background: rgba(168, 224, 99, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(168, 224, 99, 0.3);">
-                    <h3 style="color: #a8e063; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                        💆 Массаж
-                        <span style="background: #a8e063; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="massageDisplay">0</span>
-                    </h3>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <button onclick="adjustCurrency('massage', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
-                        <button onclick="adjustCurrency('massage', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
-                        <button onclick="adjustCurrency('massage', 2)" style="background: #667eea; color: white; width: 100%;">+2</button>
-                    </div>
+            <div class="currency-control">
+                <h3>
+                    💆 Массаж
+                    <span id="massageDisplay">0</span>
+                </h3>
+                <div class="currency-buttons">
+                    <button onclick="adjustCurrency('massage', -1)" class="danger-button">-1</button>
+                    <button onclick="adjustCurrency('massage', 1)">+1</button>
+                    <button onclick="adjustCurrency('massage', 2)" class="secondary-button">+2</button>
                 </div>
+            </div>
 
-                <!-- Мытьё посуды -->
-                <div style="background: rgba(240, 147, 251, 0.1); padding: 15px; border-radius: 10px; border: 2px solid rgba(240, 147, 251, 0.3);">
-                    <h3 style="color: #f093fb; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                        🧽 Мытьё посуды
-                        <span style="background: #f093fb; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;" id="dishesDisplay">0</span>
-                    </h3>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                        <button onclick="adjustCurrency('dishes', -1)" style="background: #ff4757; color: white; width: 100%;">-1</button>
-                        <button onclick="adjustCurrency('dishes', 1)" style="background: #2ed573; color: white; width: 100%;">+1</button>
-                        <button onclick="adjustCurrency('dishes', 1)" style="background: #667eea; color: white; width: 100%;">+1</button>
-                    </div>
+            <div class="currency-control">
+                <h3>
+                    🧽 Мытьё посуды
+                    <span id="dishesDisplay">0</span>
+                </h3>
+                <div class="currency-buttons">
+                    <button onclick="adjustCurrency('dishes', -1)" class="danger-button">-1</button>
+                    <button onclick="adjustCurrency('dishes', 1)">+1</button>
+                    <button onclick="adjustCurrency('dishes', 1)" class="secondary-button">+1</button>
                 </div>
-                
             </div>
         </div>
 
@@ -876,7 +963,8 @@
         <div id="menuList" class="menu-list">
             <div class="empty-state">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 3h18v18H3zM12 8v8m-4-4h8"/>
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
                 </svg>
                 <p>Загружаем меню...</p>
             </div>
@@ -960,7 +1048,6 @@
                     const response = await fetch(`${this.serverUrl}/api/menu`);
                     if (response.ok) {
                         this.data = await response.json();
-                        // Инициализируем кошелек если его нет
                         if (!this.data.wallet) {
                             this.data.wallet = { kisses: 10, scratches: 5, massage: 2, dishes: 1 };
                         }
@@ -989,7 +1076,6 @@
                 }
             }
 
-            // Управление блюдами
             add(item) {
                 this.data.menu.push({
                     ...item,
@@ -1015,14 +1101,12 @@
                 return this.data.menu || [];
             }
 
-            // Управление кошельком
             updateWalletDisplay() {
                 document.getElementById('kissesBalance').textContent = this.data.wallet?.kisses || 0;
                 document.getElementById('scratchesBalance').textContent = this.data.wallet?.scratches || 0;
                 document.getElementById('massageBalance').textContent = this.data.wallet?.massage || 0;
                 document.getElementById('dishesBalance').textContent = this.data.wallet?.dishes || 0;
                 
-                // Обновляем также дисплеи в секции управления валютой
                 const kissesDisplay = document.getElementById('kissesDisplay');
                 const scratchesDisplay = document.getElementById('scratchesDisplay');
                 const massageDisplay = document.getElementById('massageDisplay');
@@ -1047,14 +1131,12 @@
             }
 
             spendCurrency(costs) {
-                // Проверяем, хватает ли валюты
                 for (const [type, amount] of Object.entries(costs)) {
                     if ((this.data.wallet[type] || 0) < amount) {
                         return false;
                     }
                 }
                 
-                // Тратим валюту
                 for (const [type, amount] of Object.entries(costs)) {
                     this.data.wallet[type] -= amount;
                 }
@@ -1082,7 +1164,6 @@
                 setTimeout(() => anim.remove(), 2000);
             }
 
-            // Управление корзиной
             loadCart() {
                 this.cart = JSON.parse(localStorage.getItem('cart') || '[]');
                 this.updateCartDisplay();
@@ -1145,26 +1226,21 @@
             }
         }
 
-        // Глобальный экземпляр приложения
         const app = new MenuApp();
 
-        // Функции интерфейса
         function switchMode(mode) {
             app.currentMode = mode;
             
-            // Обновляем табы
             document.querySelectorAll('.mode-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             event.target.classList.add('active');
             
-            // Показываем/скрываем секции
             document.getElementById('addSection').style.display = mode === 'add' ? 'block' : 'none';
             document.getElementById('earnSection').style.display = mode === 'earn' ? 'block' : 'none';
             document.getElementById('menuList').style.display = mode === 'view' ? 'grid' : 'none';
             document.querySelector('.search-box').style.display = mode === 'view' ? 'block' : 'none';
             
-            // Сбрасываем форму при переключении
             if (mode !== 'add') {
                 document.getElementById('menuForm').reset();
                 document.getElementById('imagePreview').style.display = 'none';
@@ -1175,7 +1251,6 @@
             }
         }
 
-        // Обработка загрузки изображения
         document.getElementById('dishImage').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -1223,7 +1298,6 @@
             }
         });
 
-        // Обработка формы
         document.getElementById('menuForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -1257,18 +1331,15 @@
                 app.showNotification('Блюдо добавлено!');
             }
             
-            // Переключаемся на просмотр
             document.querySelector('.mode-tab').click();
             renderMenu();
         });
 
-        // Поиск
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
             renderMenu(searchTerm);
         });
 
-        // Отображение меню
         function renderMenu(searchTerm = '') {
             const menuList = document.getElementById('menuList');
             const allItems = app.getAll();
@@ -1282,10 +1353,10 @@
                 menuList.innerHTML = `
                     <div class="empty-state">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 3h18v18H3zM12 8v8m-4-4h8"/>
+                            <path d="M9 11V6C9 4.34315 10.3431 3 12 3C13.6569 3 15 4.34315 15 6V11M5 11H19L18 21H6L5 11Z"/>
                         </svg>
                         <p>${searchTerm ? 'Ничего не найдено' : 'Пока нет добавленных блюд'}</p>
-                        <p style="font-size: 0.9em;">${searchTerm ? 'Попробуйте изменить запрос' : 'Добавьте свое первое блюдо!'}</p>
+                        <p style="font-size: 0.875rem; margin-top: 8px;">${searchTerm ? 'Попробуйте изменить запрос' : 'Добавьте свое первое блюдо!'}</p>
                     </div>
                 `;
                 return;
@@ -1297,8 +1368,17 @@
                 return `
                     <div class="menu-item">
                         <div class="menu-item-actions">
-                            <button class="action-btn edit-btn" onclick="editItem('${item.id}')">✏️</button>
-                            <button class="action-btn delete-btn" onclick="deleteItem('${item.id}')">×</button>
+                            <button class="action-btn edit-btn" onclick="editItem('${item.id}')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteItem('${item.id}')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 6L6 18M6 6l12 12"/>
+                                </svg>
+                            </button>
                         </div>
                         <div class="menu-item-header">
                             ${item.image ? `<img src="${item.image}" alt="${item.name}" class="menu-item-image">` : ''}
@@ -1307,50 +1387,44 @@
                                 <p class="ingredients">Ингредиенты: ${item.ingredients}</p>
                                 <p>${item.recipe}</p>
                                 <div class="menu-item-prices">
-                                    ${prices.kisses ? `<span class="price-tag kisses">💋 ${prices.kisses}</span>` : ''}
-                                    ${prices.scratches ? `<span class="price-tag scratches">🤗 ${prices.scratches}</span>` : ''}
-                                    ${prices.massage ? `<span class="price-tag massage">💆 ${prices.massage}</span>` : ''}
-                                    ${prices.dishes ? `<span class="price-tag dishes">🧽 ${prices.dishes}</span>` : ''}
+                                    ${prices.kisses ? `<span class="price-tag">💋 ${prices.kisses}</span>` : ''}
+                                    ${prices.scratches ? `<span class="price-tag">🤗 ${prices.scratches}</span>` : ''}
+                                    ${prices.massage ? `<span class="price-tag">💆 ${prices.massage}</span>` : ''}
+                                    ${prices.dishes ? `<span class="price-tag">🧽 ${prices.dishes}</span>` : ''}
                                 </div>
                             </div>
                         </div>
                         <button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(item).replace(/'/g, "\\'")})'>
-                            🛒 Добавить в корзину
+                            В корзину
                         </button>
                     </div>
                 `;
             }).join('');
         }
 
-        // Функции для работы с блюдами
         function editItem(id) {
             const item = app.getAll().find(i => i.id === id);
             if (!item) return;
             
-            // Переключаемся на режим добавления
             document.querySelectorAll('.mode-tab')[1].click();
             
-            // Заполняем форму
             document.getElementById('editId').value = id;
             document.getElementById('dishName').value = item.name;
             document.getElementById('ingredients').value = item.ingredients;
             document.getElementById('recipe').value = item.recipe;
             
-            // Цены
             const prices = item.prices || { kisses: item.kissPrice || 0 };
             document.getElementById('kissPrice').value = prices.kisses || 0;
             document.getElementById('scratchPrice').value = prices.scratches || 0;
             document.getElementById('massagePrice').value = prices.massage || 0;
             document.getElementById('dishesPrice').value = prices.dishes || 0;
             
-            // Изображение
             if (item.image) {
                 document.getElementById('imagePreview').src = item.image;
                 document.getElementById('imagePreview').style.display = 'block';
                 document.getElementById('uploadText').style.display = 'none';
             }
             
-            // Обновляем заголовки
             document.getElementById('formTitle').textContent = 'Редактировать блюдо';
             document.getElementById('submitBtn').textContent = 'Сохранить изменения';
         }
@@ -1362,7 +1436,6 @@
             }
         }
 
-        // Функции корзины
         function addToCart(item) {
             app.addToCart(item);
         }
@@ -1382,7 +1455,7 @@
             const cartTotal = document.getElementById('cartTotal');
             
             if (app.cart.length === 0) {
-                cartBody.innerHTML = '<p style="text-align: center; color: #999;">Корзина пуста</p>';
+                cartBody.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Корзина пуста</p>';
                 cartTotal.style.display = 'none';
                 return;
             }
@@ -1398,11 +1471,14 @@
                             ${item.prices.dishes ? `<span class="price-badge">🧽 ${item.prices.dishes}</span>` : ''}
                         </div>
                     </div>
-                    <button class="action-btn delete-btn" onclick="removeFromCart(${index})">×</button>
+                    <button class="action-btn delete-btn" onclick="removeFromCart(${index})">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
                 </div>
             `).join('');
             
-            // Показываем итого
             const totals = app.getTotalCost();
             const totalPrices = document.getElementById('totalPrices');
             
@@ -1431,7 +1507,6 @@
         function checkout() {
             const totals = app.getTotalCost();
             
-            // Проверяем, хватает ли валюты
             let canAfford = true;
             let missing = [];
             
@@ -1448,13 +1523,10 @@
                 return;
             }
             
-            // Списываем валюту
             if (app.spendCurrency(totals)) {
                 app.showNotification('Заказ оформлен! Приятного аппетита! 🎉');
                 app.clearCart();
                 closeCart();
-                
-                // Анимация конфетти
                 createConfetti();
             }
         }
@@ -1463,7 +1535,6 @@
             app.adjustCurrency(type, amount);
         }
 
-        // Праздничная анимация
         function createConfetti() {
             for (let i = 0; i < 30; i++) {
                 setTimeout(() => {
@@ -1482,7 +1553,6 @@
             }
         }
 
-        // CSS для анимации падения
         const style = document.createElement('style');
         style.textContent = `
             @keyframes fall {
